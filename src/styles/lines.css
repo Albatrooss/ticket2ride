@@ -1,0 +1,42 @@
+.line-container {
+position: absolute;
+z-index: 2;
+}
+
+.line {
+    display: flex;
+}
+
+.square {
+width: calc(min(100vw, 60vh) / 12);
+height: 3vh;
+border: 1px solid black;
+
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 3;
+}
+
+.line-0 {
+    left: 22%;
+    top: 3%;
+}
+
+.line-1 {
+    transform: rotate(90deg);
+    left: 18%;
+    top: 10%;
+}
+
+.line-2 {
+    transform: rotate(55deg);
+    left: 24%;
+    top: 8%;
+}
+
+.line-3 {
+    transform: rotate(90deg);
+    left: 28%;
+    top: 10%;
+}
