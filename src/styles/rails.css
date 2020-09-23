@@ -36,38 +36,38 @@ height: 2.2vh; */
 
 .rail-0 {
     top: .75%;
-    left: 26%;
+    left: 24%;
     transform: rotate(-2deg);
 }
 
 .rail-1 {
-    top: 12%;
-    left: 11%;
+    top: 13%;
+    left: 6%;
     transform: rotate(93deg);
 }
 
 .rail-2 {
     top: 9%;
-    left: 22%;
-    transform: rotate(-120deg);
+    left: 20%;
+    transform: rotate(-129deg);
 }
 
 .rail-3 {
     top: 8.5%;
-    left: 36%;
+    left: 35%;
     transform: rotate(-70deg);
 }
 
 .rail-4 {
     top: 2%;
-    left: 52%;
+    left: 50%;
     transform: rotate(-0deg);
 }
 
 .rail-5 {
-    top: 21%;
-    left: 24%;
-    transform: rotate(-18deg);
+    top: 21.5%;
+    left: 22%;
+    transform: rotate(-16deg);
 }
 
 .rail-6 {
@@ -76,9 +76,9 @@ height: 2.2vh; */
 }
 
 .rail-7 {
-    top: 32.5%;
-    left: 13.75%;
-    transform: rotate(82deg);
+    top: 33%;
+    left: 11%;
+    transform: rotate(72deg);
 }
 
 .rail-8 {
@@ -136,21 +136,21 @@ height: 2.2vh; */
 }
 
 .rail-17 {
-    top: 47%;
-    left: 46%;
-    transform: rotate(-80deg);
+    top: 48%;
+    left: 47%;
+    transform: rotate(-85deg);
 }
 
 .rail-18 {
-    top: 48%;
-    left: 57%;
-    transform: rotate(48deg);
+    top: 44%;
+    left: 60%;
+    transform: rotate(18deg);
 }
 
 .rail-19 {
-    top: 56%;
-    left: 53%;
-    transform: rotate(-3deg);
+    top: 53%;
+    left: 58%;
+    transform: rotate(-20deg);
 }
 
 .rail-20 {
@@ -161,32 +161,32 @@ height: 2.2vh; */
 
 .rail-21 {
     top: 64%;
-    left: 46%;
-    transform: rotate(84deg);
+    left: 48%;
+    transform: rotate(75deg);
 }
 
 .rail-22 {
-    top: 63.5%;
-    left: 55.5%;
-    transform: rotate(48deg);
+    top: 60.5%;
+    left: 57%;
+    transform: rotate(24deg);
 }
 
 .rail-23 {
-    top: 63%;
-    left: 70%;
-    transform: rotate(-85deg);
+    top: 59%;
+    left: 75%;
+    transform: rotate(-75deg);
 }
 
 .rail-24 {
-    top: 72.5%;
-    left: 59.5%;
-    transform: rotate(-20deg);
+    top: 70%;
+    left: 64%;
+    transform: rotate(-35deg);
 }
 
 .rail-25 {
     top: 82%;
-    left: 48%;
-    transform: rotate(-85deg);
+    left: 50%;
+    transform: rotate(-80deg);
 }
 
 .rail-26 {
@@ -196,9 +196,9 @@ height: 2.2vh; */
 }
 
 .rail-27 {
-    top: 81%;
-    left: 58%;
-    transform: rotate(-160deg);
+    top: 80%;
+    left: 60%;
+    transform: rotate(-150deg);
 }
 
 .rail-28 {
