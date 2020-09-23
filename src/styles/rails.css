@@ -1,0 +1,271 @@
+* {
+    --small-width: calc(min(100vw, 60vh) / 14);
+}
+
+.rail {
+    position: absolute;
+    top: 100%;
+}
+
+/* width: calc(min(100vw, 60vh) / 12);
+height: 2.2vh; */
+
+.rail-2 .square,
+.rail-3 .square,
+.rail-10 .square,
+.rail-13 .square,
+.rail-14 .square,
+.rail-16 .square, 
+.rail-20 .square,
+.rail-21 .square,
+.rail-28 .square {
+    width: var(--small-width);
+    height: 2vh;
+}
+
+.rail-8 .square,
+.rail-15 .square,
+.rail-17 .square{
+    width: calc(min(100vw, 60vh) / 16);
+    height: 2vh;
+}
+
+/* =====================================================================
+            RAILS
+   ===================================================================== */
+
+.rail-0 {
+    top: .75%;
+    left: 26%;
+    transform: rotate(-2deg);
+}
+
+.rail-1 {
+    top: 12%;
+    left: 11%;
+    transform: rotate(93deg);
+}
+
+.rail-2 {
+    top: 9%;
+    left: 22%;
+    transform: rotate(-120deg);
+}
+
+.rail-3 {
+    top: 8.5%;
+    left: 36%;
+    transform: rotate(-70deg);
+}
+
+.rail-4 {
+    top: 2%;
+    left: 52%;
+    transform: rotate(-0deg);
+}
+
+.rail-5 {
+    top: 21%;
+    left: 24%;
+    transform: rotate(-18deg);
+}
+
+.rail-6 {
+    top: 19%;
+    left: 43%;
+}
+
+.rail-7 {
+    top: 32.5%;
+    left: 13.75%;
+    transform: rotate(82deg);
+}
+
+.rail-8 {
+    top: 28%;
+    left: 24%;
+    transform: rotate(23deg);
+}
+
+.rail-9 {
+    top: 23%;
+    left: 36%;
+    transform: rotate(-120deg);
+}
+
+.rail-10 {
+    top: 36%;
+    left: 26.5%;
+    transform: rotate(-38deg);
+}
+
+.rail-11 {
+    top: 25%;
+    left: 47%;
+    transform: rotate(-32deg);
+}
+
+.rail-12 {
+    top: 34%;
+    left: 46%;
+    transform: rotate(-125deg);
+}
+
+.rail-13 {
+    top: 31%;
+    left: 57%;
+    transform: rotate(90deg);
+}
+
+.rail-14 {
+    top: 57%;
+    left: 14.5%;
+    transform: rotate(72deg);
+}
+
+.rail-15 {
+    top: 49%;
+    left: 28%;
+    transform: rotate(42deg);
+}
+
+.rail-16 {
+    top: 42%;
+    left: 34%;
+    transform: rotate(-6deg);
+}
+
+.rail-17 {
+    top: 47%;
+    left: 46%;
+    transform: rotate(-80deg);
+}
+
+.rail-18 {
+    top: 48%;
+    left: 57%;
+    transform: rotate(48deg);
+}
+
+.rail-19 {
+    top: 56%;
+    left: 53%;
+    transform: rotate(-3deg);
+}
+
+.rail-20 {
+    top: 65.5%;
+    left: 37%;
+    transform: rotate(-40deg);
+}
+
+.rail-21 {
+    top: 64%;
+    left: 46%;
+    transform: rotate(84deg);
+}
+
+.rail-22 {
+    top: 63.5%;
+    left: 55.5%;
+    transform: rotate(48deg);
+}
+
+.rail-23 {
+    top: 63%;
+    left: 70%;
+    transform: rotate(-85deg);
+}
+
+.rail-24 {
+    top: 72.5%;
+    left: 59.5%;
+    transform: rotate(-20deg);
+}
+
+.rail-25 {
+    top: 82%;
+    left: 48%;
+    transform: rotate(-85deg);
+}
+
+.rail-26 {
+    top: 91%;
+    left: 56%;
+    transform: rotate(-177deg);
+}
+
+.rail-27 {
+    top: 81%;
+    left: 58%;
+    transform: rotate(-160deg);
+}
+
+.rail-28 {
+    top: 83%;
+    left: 32%;
+    transform: rotate(66deg);
+}
+
+/* =====================================================================
+            CENTRAL-UN CURVE
+   ===================================================================== */
+
+.rail-4 .square:nth-child(1) {
+    transform: rotate(10deg);
+}
+.rail-4 .square:nth-child(2) {
+    position: absolute;
+    transform: rotate(55deg);
+    top: 120%;
+    left: 95%;
+}
+.rail-4 .square:nth-child(3) {
+    position: absolute;
+    transform: rotate(85deg);
+    top: 340%;
+    left: 130%;
+}
+
+/* =====================================================================
+            UN-GRAMERCY CURVE
+   ===================================================================== */
+
+
+.rail-13 .square:first-child {
+    transform: rotate(8deg) translateY(40%);
+}
+
+.rail-13 .square:nth-child(2) {
+    transform: rotate(20deg) translateY(80%) translate(25%);
+}
+
+.rail-13 .square:nth-child(3) {
+    transform: rotate(40deg) translateY(150%) translate(80%);
+}
+
+/* =====================================================================
+            SOHO-GREENWHICH CURVE
+   ===================================================================== */
+
+.rail-20 .square:nth-child(2) {
+    transform: rotate(-35deg) translateY(-50%) translateX(28%);
+}
+
+/* =====================================================================
+            HOVER
+   ===================================================================== */
+
+.hovered {
+    border: 1px solid yellow;
+    cursor: pointer;
+}
+
+.hovered::after {
+    content: '';
+    width: 80%;
+    height: 80%;
+    background-color: red;
+    border: 1px solid white;
+    opacity: .6;
+}

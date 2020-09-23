@@ -1,0 +1,82 @@
+/* LINCOLN CENTER */
+.token-0 {
+    top: 2%;
+    left: 20%;
+}
+/* CENTRAL */
+.token-1 {
+    top: .7%;
+    left: 45%;
+}
+/* MID */
+.token-2 {
+    top: 22%;
+    left: 18%;
+}
+/* TIMES */
+.token-3 {
+    top: 18%;
+    left: 35%;
+}
+/* UN */
+.token-4 {
+    top: 18%;
+    left: 65%;
+}
+/* CHELSEA */
+.token-5 {
+    top: 42%;
+    left: 22%;
+}
+/* EMPIRE */
+.token-6 {
+    top: 30%;
+    left: 42%;
+}
+/* GRAMERCY */
+.token-7 {
+    top: 40.5%;
+    left: 52%;
+}
+/* GREENWICH */
+.token-8 {
+    top: 56%;
+    left: 47%;
+}
+/* EAST VILLAGE */
+.token-9 {
+    top: 55%;
+    left: 72%;
+}
+/* SOHO */
+.token-10 {
+    top: 70%;
+    left: 34%;
+}
+/* CHINATOWN */
+.token-11 {
+    top: 76%;
+    left: 52%;
+}
+/* LOWER EAST SIDE */
+.token-12 {
+    top: 70%;
+    left: 70%;
+}
+/* WALL */
+.token-13 {
+    top: 92%;
+    left: 48%;
+}
+/* BROOKLYN */
+.token-14 {
+    top: 91%;
+    left: 85%;
+}
+
+.quarter {
+    width: 50%;
+    height: 50%;
+    border: 1px solid red;
+    box-sizing: border-box;
+}
