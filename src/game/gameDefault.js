@@ -206,7 +206,66 @@ const paths = [
 ]
 
 const tokens = [
-  false, true, false, true, true, true, true, false, true, false, false, true, false, true, true
+  {
+    points: false,
+    name: 'Lincoln Center'
+  },
+  {
+    points: true,
+    name: 'Central Park'
+  },
+  {
+    points: false,
+    name: 'Midtown West'
+  },
+  {
+    points: true,
+    name: 'Times Square'
+  },
+  {
+    points: true,
+    name: 'United Nations'
+  },
+  {
+    points: true,
+    name: 'Chelsea'
+  },
+  {
+    points: true,
+    name: 'Empire State Building'
+  },
+  {
+    points: false,
+    name: 'Gramercy Park'
+  },
+  {
+    points: true,
+    name: 'Greenwich Village'
+  },
+  {
+    points: false,
+    name: 'East Village'
+  },
+  {
+    points: false,
+    name: 'Soho'
+  },
+  {
+    points: true,
+    name: 'Chinatown'
+  },
+  {
+    points: true,
+    name: 'Lower East Side'
+  },
+  {
+    points: true,
+    name: 'Wall Street'
+  },
+  {
+    points: true,
+    name: 'Brooklyn'
+  }
 ]
 
 module.exports = {

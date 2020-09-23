@@ -80,3 +80,101 @@
     border: 1px solid red;
     box-sizing: border-box;
 }
+
+/* ===============================================================
+         Labels
+   =============================================================== */
+
+.token p {
+    position: absolute;
+    color: #333;
+    display: block;
+    font-size: .9em;
+}
+
+.p-0 {
+    left: -260%;
+    right: 500%;
+}
+
+.p-1 {
+    left: 120%;
+    top: 100%;
+}
+
+.p-2 {
+    left: -330%;
+    top: -125%;
+    /* right: 500%; */
+    text-align: center;
+}
+
+.p-3 {
+    left: -40%;
+    top: -110%;
+    transform: rotate(-5deg);
+    width: 15vw;
+    z-index: 3;
+}
+
+.p-4 {
+    left: 120%;
+}
+
+.p-5 {
+    left: -290%;
+}
+
+p.p-6 {
+    left: 40%;
+    top: 0%;
+    width: 10vw;
+    font-size: .7em;
+    transform: rotate(-10deg);
+    margin: 0;
+}
+
+.p-7 {
+    left: 180%;
+    top: -90%;
+    width: 10vw
+}
+
+p.p-8 {
+    left: -320%;
+    top: 40%;
+    width: 5vw;
+    transform: rotate(-10deg);
+    font-size: .8em;
+    margin: 0;
+}
+
+.p-9 {
+    left: 110%;
+}
+
+.p-10 {
+    left: -200%;
+}
+
+.p-11 {
+    left: -260%;
+    top: -110%;
+    transform: rotate(-10deg);
+}
+
+.p-12 {
+    left: 60%;
+    top: -60%;
+    width: 10vw;
+}
+
+.p-13 {
+    left: -370%;
+    top: -40%;
+}
+
+.p-14 {
+    left: -20%;
+    top: 70%;
+}
