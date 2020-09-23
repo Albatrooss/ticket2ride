@@ -81,7 +81,11 @@ const paths = [
     taken: false
   }],
   [{
+<<<<<<< HEAD
     color: 'red',
+=======
+    color: 'orange',
+>>>>>>> 3b710aa6baaa21a23a121676fbd4a32625a6572e
     num: 1,
     taken: false
   },
@@ -112,11 +116,14 @@ const paths = [
     taken: false
   }],
   [{
+<<<<<<< HEAD
     color: 'orange',
     num: 2,
     taken: false
   }],
   [{
+=======
+>>>>>>> 3b710aa6baaa21a23a121676fbd4a32625a6572e
     color: 'black',
     num: 2,
     taken: false

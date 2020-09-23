@@ -1,0 +1,74 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  --red: red;
+  --green: green;
+  --black: #333;
+  --blue: blue;
+  --orange: orange;
+  --pink: pink;
+  --grey: #ddd;
+}
+.App {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+
+  background-color: #d3d3d3;
+}
+
+.red {
+  background-color: var(--red);
+}
+
+.green {
+  background-color: var(--green);
+}
+
+.black {
+  background-color: var(--black);
+}
+
+.blue {
+  background-color: var(--blue);
+}
+
+.orange {
+  background-color: var(--orange);
+}
+.pink {
+  background-color: var(--pink);
+}
+.grey {
+  background-color: var(--grey);
+}
+
+.board {
+  height: 80vh;
+  width: min(100vw, 60vh);
+  border: 5px solid #fafafa;
+  border-radius: 5px;
+
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.board img {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.taxi {
+  width: 80%;
+  height: 80%; 
+}
