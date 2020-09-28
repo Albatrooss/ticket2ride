@@ -268,7 +268,57 @@ const tokens = [
   }
 ]
 
+const cards = [
+  {
+    color: 'red',
+    symbol: 'Red'
+  },
+  {
+    color: 'blue',
+    symbol: 'Blue'
+  },
+  {
+    color: 'green',
+    symbol: 'Green'
+  },
+  {
+    color: 'pink',
+    symbol: 'Pink'
+  },
+  {
+    color: 'orange',
+    symbol: 'Orange'
+  },
+  {
+    color: 'black',
+    symbol: 'Black'
+  }
+]
+
+let pathsLogic = [];
+for (let i = 0; i < 30; i++) {
+  pathsLogic.push(false);
+}
+
+const startingDeck = {
+  red: 6,
+  blue: 6,
+  orange: 6,
+  green: 6,
+  black: 6,
+  pink: 6,
+  wild: 8
+}
+
+const startingDestinations = {
+
+}
+
 module.exports = {
-  paths,
-  tokens
+  defaultPaths: paths,
+  pathsLogic,
+  defaultTokens: tokens,
+  startingDeck,
+  startingDestinations,
+  cards
 }

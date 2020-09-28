@@ -1,0 +1,35 @@
+.hand-container {
+    width: 50%;
+}
+.hand {
+    position: relative;
+    width: 100%;
+}
+.card:hover {
+    top: -20px;
+    cursor: pointer;
+}
+
+.card {
+    width: 5vw;
+    height: 7vw;
+    border-radius: 10px;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.card::after {
+    content: '';
+    width: 86%;
+    height: 90%;
+    border: 2px solid white;
+    border-radius: 7px;
+    box-sizing: border-box;
+
+    position: absolute;
+    left: 7%;
+    top: 5%;
+}
