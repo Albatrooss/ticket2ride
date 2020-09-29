@@ -1,69 +1,72 @@
 const lines = [
   {
-    node: 'LC',
-    connections: ['MW', 'TS', 'CP']
+    node: 'Lincoln Center',
+    connections: ['Midtown West', 'Times Square', 'Central Park']
   },
   {
-    node: 'MW',
-    connections: ['LS', 'TS', 'ESB', 'C']
+    node: 'Midtown West',
+    connections: ['Lincoln Center', 'Times Square', 'Empire State Building', 'Chelsea']
   },
   {
-    node: 'TS',
-    connections: ['MW', 'LC', 'CP', 'UN', 'ESB']
+    node: 'Times Square',
+    connections: ['Midtown West', 'Lincoln Center', 'Central Park', 'United Nations', 'Empire State Building']
   },
   {
-    node: 'CP',
-    connections: ['LC', 'TS', 'UN']
+    node: 'Central Park',
+    connections: ['Lincoln Center', 'Times Square', 'United Nations']
   },
   {
-    node: 'UN',
-    connections: ['CP', 'TS', 'ESB', 'GP']
+    node: 'United Nations',
+    connections: ['Central Park', 'Times Square', 'Empire State Building', 'Gramercy Park']
   },
   {
-    node: 'ESB',
-    connections: ['MW', 'TS', 'UN', 'GP', 'C']
+    node: 'Empire State Building',
+    connections: ['Midtown West', 'Times Square', 'United Nations', 'Gramercy Park', 'Chelsea']
   },
   {
-    node: 'C',
-    connections: ['MW', 'ESB', 'GP', 'GV', 'S']
+    node: 'Chelsea',
+    connections: ['Midtown West', 'Empire State Building', 'Gramercy Park', 'Greenwich Village', 'Soho']
   },
   {
-    node: 'GP',
-    connections: ['ESP', 'C', 'UN', "EV", 'GV']
+    node: 'Gramercy Park',
+    connections: ['ESP', 'Chelsea', 'United Nations', 'East Village', 'Greenwich Village']
   },
   {
-    node: 'GV',
-    connections: ['C', 'GP', 'EV', 'LES', 'CT', 'S']
+    node: 'Greenwich Village',
+    connections: ['Chelsea', 'Gramercy Park', 'East Village', 'Lower East Side', 'Chinatown', 'Soho']
   },
   {
-    node: 'EV',
-    connections: ['GP', 'GV', 'LES']
+    node: 'East Village',
+    connections: ['Gramercy Park', 'Greenwich Village', 'Lower East Side']
   },
   {
-    node: 'LES',
-    connections: ['EV', 'GV', 'CT', 'B']
+    node: 'Lower East Side',
+    connections: ['East Village', 'Greenwich Village', 'Chinatown', 'Brooklyn']
   },
   {
-    node: 'S',
-    connections: ['C', 'GV', 'WS']
+    node: 'Soho',
+    connections: ['Chelsea', 'Greenwich Village', 'Wall Street']
   },
   {
-    node: 'CT',
-    connections: ['GV', 'LES', 'B', 'WS']
+    node: 'Chinatown',
+    connections: ['Greenwich Village', 'Lower East Side', 'Brooklyn', 'Wall Street']
   },
   {
-    node: 'WS',
-    connections: ['S', 'CT', 'B']
+    node: 'Wall Street',
+    connections: ['Soho', 'Chinatown', 'Brooklyn']
   },
   {
-    node: 'B',
-    connections: ['WS', 'CT', 'LES']
+    node: 'Brooklyn',
+    connections: ['Wall Street', 'Chinatown', 'Lower East Side']
   }
 ]
 
-function checkConnected(myNodes, s, e) {
+function checkConnected(user, num) {
   let used = [];
   let answer = false;
+  let myNodes = user.routes;
+  let s = user.dCards[num].start;
+  let e = user.dCards[num].end;
   if (!myNodes.includes(s) || !myNodes.includes(e)) return false
 
   test(s);

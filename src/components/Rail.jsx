@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
 import '../styles/rails.css';
 
-function Line({ data }) {
+function convertPoints(num) {
+  if (num < 3) {
+    return num;
+  } else if (num === 3) {
+    return 4;
+  } else {
+    return 7
+  }
+}
+
+function Line({ data, outerKey, innerKey, handleClaimLine }) {
 
   const [hovered, setHovered] = useState(false);
 
@@ -14,15 +24,15 @@ function Line({ data }) {
   }
 
   return (
-    <div className="line" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+    <div className="line" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={() => handleClaimLine(outerKey, innerKey, convertPoints(data.num))}>
       {squares()}
     </div>
   )
 }
 
-export default function Rail({ data, myKey }) {
+export default function Rail({ data, myKey, handleClaimLine }) {
 
-  const lines = data.map((line, i) => <Line data={line} key={i} />)
+  const lines = data.map((line, i) => <Line data={line} outerKey={myKey} innerKey={i} handleClaimLine={handleClaimLine} />)
 
   return (
     <div key={myKey} className={`rail rail-${myKey}`}>

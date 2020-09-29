@@ -3,6 +3,8 @@ import { useHistory, useParams } from 'react-router-dom';
 import fire from '../firebase';
 import tokenService from '../util/tokenService';
 
+import { defaultDestinations } from '../game/gameDefault';
+
 const db = fire.firestore();
 
 export default function Lobby() {
@@ -12,7 +14,7 @@ export default function Lobby() {
   const [users, setUsers] = useState([]);
   const [errMsg, setErrMsg] = useState('');
   const [host, setHost] = useState(false);
-  const [gameOn, setGameOn] = useState(false);
+  const [logic, setLogic] = useState({});
 
   const userToken = tokenService.getUserFromToken();
 
@@ -25,6 +27,7 @@ export default function Lobby() {
       db.collection(id).doc(username).set({
         hand: [],
         routes: [],
+        dCards: [],
         points: 0,
         taxis: 17,
         host: users.length > 0 ? false : true
@@ -49,14 +52,32 @@ export default function Lobby() {
   }
 
   const startGame = async () => {
-    let thisId = userToken.username
-    let me = await db.collection(id).doc(thisId).get();
-    db.collection(id).doc(thisId).set({
-      ...me.data(),
-      gameOn: true
-    })
+    let thisId = userToken.username;
+    await dealDCards();
+    await db.collection(id).doc(thisId).update({ gameOn: true })
   }
 
+  const dealDCards = async () => {
+    let dests = logic.destinations;
+    let available = [];
+
+    users.forEach(u => {
+      dealOne(u);
+      dealOne(u);
+      db.collection(id).doc(u.id).update({ dCards: u.dCards })
+    })
+
+    function dealOne(u) {
+      available = dests.filter(x => !x.taken);
+      let card = available[Math.floor(Math.random() * available.length)];
+      dests.find(c => c.start === card.start && c.end === card.end).taken = true;
+      u.dCards = [...u.dCards, { start: card.start, end: card.end, connected: false }];
+    }
+
+
+    db.collection(id).doc('logic').update({ destinations: dests });
+    console.log(logic, users);
+  }
 
   const usersList = users.map(u =>
     <li key={u.id}>{u.id}{u.host ? '-HOST' : ''}
@@ -77,6 +98,8 @@ export default function Lobby() {
         userList.forEach(x => {
           if (x.id !== 'logic') {
             usersList.push(x);
+          } else {
+            setLogic(x);
           }
         })
         setUsers(usersList);
@@ -111,6 +134,7 @@ export default function Lobby() {
       {host && <>
         <p>YOU ARE THE HOST</p>
         <button onClick={startGame}>Start Game</button>
+        <button onClick={() => dealDCards(users[0])}>CLICK ME</button>
       </>}
     </>
   )

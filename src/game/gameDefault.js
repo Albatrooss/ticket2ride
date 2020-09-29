@@ -2,206 +2,242 @@ const paths = [
   [{
     color: 'orange',
     num: 2,
-    taken: false
+    taken: false,
+    nodes: ['Lincoln Center', 'Central Park']
   }],
   [{
     color: 'red',
     num: 2,
-    taken: false
+    taken: false,
+    nodes: ['Lincoln Center', 'Midtown West']
   }],
   [{
     color: 'green',
     num: 2,
-    taken: false
+    taken: false,
+    nodes: ['Lincoln Center', 'Times Square']
   },
   {
     color: 'blue',
     num: 2,
-    taken: false
+    taken: false,
+    nodes: ['Lincoln Center', 'Times Square']
   }],
   [{
     color: 'black',
     num: 2,
-    taken: false
+    taken: false,
+    nodes: ['Times Square', 'Central Park']
   },
   {
     color: 'red',
     num: 2,
-    taken: false
+    taken: false,
+    nodes: ['Times Square', 'Central Park']
   }],
   [{
     color: 'pink',
     num: 3,
     taken: false,
-    special: 'top-corner'
+    nodes: ['United Nations', 'Central Park']
   }],
   [{
     color: 'grey',
     num: 1,
-    taken: false
+    taken: false,
+    nodes: ['Midtown West', 'Times Square']
   }],
   [{
     color: 'grey',
     num: 2,
-    taken: false
+    taken: false,
+    nodes: ['Times Square', 'United Nations']
   }],
   [{
     color: 'blue',
     num: 2,
-    taken: false
+    taken: false,
+    nodes: ['Midtown West', 'Chelsea']
   }],
   [{
     color: 'green',
     num: 2,
-    taken: false
+    taken: false,
+    nodes: ['Midtown West', 'Empire State Building']
   }],
   [{
     color: 'orange',
     num: 1,
-    taken: false
+    taken: false,
+    nodes: ['Times Square', 'Empire State Building']
   },
   {
     color: 'pink',
     num: 1,
-    taken: false
+    taken: false,
+    nodes: ['Times Square', 'Empire State Building']
   }],
   [{
     color: 'grey',
     num: 2,
-    taken: false
+    taken: false,
+    nodes: ['Chelsea', 'Empire State Building']
   },
   {
     color: 'grey',
     num: 2,
-    taken: false
+    taken: false,
+    nodes: ['Chelsea', 'Empire State Building']
   }],
   [{
     color: 'black',
     num: 2,
-    taken: false
+    taken: false,
+    nodes: ['United Nations', 'Empire State Building']
   }],
   [{
     color: 'red',
     num: 1,
-    taken: false
+    taken: false,
+    nodes: ['Gramercy Park', 'Empire State Building']
   },
   {
     color: 'blue',
     num: 1,
-    taken: false
+    taken: false,
+    nodes: ['Gramercy Park', 'Empire State Building']
   }],
   [{
     color: 'green',
     num: 3,
     taken: false,
-    special: 'mid-right'
+    nodes: ['United Nations', 'Gramercy Park']
   }],
   [{
     color: 'pink',
     num: 4,
-    taken: false
+    taken: false,
+    nodes: ['Chelsea', 'Soho']
   }],
   [{
     color: 'green',
     num: 3,
-    taken: false
+    taken: false,
+    nodes: ['Chelsea', 'Greenwich Village']
   },
   {
     color: 'red',
     num: 3,
-    taken: false
-  }],
-  [{
-    color: 'orange',
-    num: 2,
-    taken: false
-  }],
-  [{
-    color: 'black',
-    num: 2,
-    taken: false
-  },
-  {
-    color: 'pink',
-    num: 2,
-    taken: false
-  }],
-  [{
-    color: 'grey',
-    num: 2,
-    taken: false
-  }],
-  [{
-    color: 'blue',
-    num: 2,
-    taken: false
+    taken: false,
+    nodes: ['Chelsea', 'Greenwich Village']
   }],
   [{
     color: 'orange',
     num: 2,
     taken: false,
-    special: 'bottom-left'
+    nodes: ['Chelsea', 'Gramercy Park']
+  }],
+  [{
+    color: 'black',
+    num: 2,
+    taken: false,
+    nodes: ['Gramercy Park', 'Greenwich Village']
+  },
+  {
+    color: 'pink',
+    num: 2,
+    taken: false,
+    nodes: ['Gramercy Park', 'Greenwich Village']
   }],
   [{
     color: 'grey',
     num: 2,
-    taken: false
+    taken: false,
+    nodes: ['Gramercy Park', 'East Village']
+  }],
+  [{
+    color: 'blue',
+    num: 2,
+    taken: false,
+    nodes: ['Greenwich Village', 'East Village']
+  }],
+  [{
+    color: 'orange',
+    num: 2,
+    taken: false,
+    nodes: ['Soho', 'Greenwich Village']
+  }],
+  [{
+    color: 'grey',
+    num: 2,
+    taken: false,
+    nodes: ['Chinatown', 'Greenwich Village']
   },
   {
     color: 'grey',
     num: 2,
-    taken: false
+    taken: false,
+    nodes: ['Chinatown', 'Greenwich Village']
   }],
   [{
     color: 'grey',
     num: 2,
-    taken: false
+    taken: false,
+    nodes: ['Lower East Side', 'Greenwich Village']
   }],
   [{
     color: 'black',
     num: 1,
-    taken: false
+    taken: false,
+    nodes: ['East Village', 'Lower East Side']
   }],
   [{
     color: 'blue',
     num: 1,
-    taken: false
+    taken: false,
+    nodes: ['Lower East Side', 'Chinatown']
   }],
   [{
     color: 'green',
     num: 1,
-    taken: false
+    taken: false,
+    nodes: ['Chinatown', 'Wall Street']
   },
   {
     color: 'pink',
     num: 1,
-    taken: false
+    taken: false,
+    nodes: ['Chinatown', 'Wall Street']
   }],
   [{
     color: 'black',
     num: 3,
-    taken: false
+    taken: false,
+    nodes: ['Brooklyn', 'Wall Street']
   },
   {
     color: 'blue',
     num: 3,
-    taken: false
+    taken: false,
+    nodes: ['Brooklyn', 'Wall Street']
   }],
   [{
     color: 'red',
     num: 3,
-    taken: false
+    taken: false,
+    nodes: ['Brooklyn', 'Chinatown']
   },
   {
     color: 'orange',
     num: 3,
-    taken: false
+    taken: false,
+    nodes: ['Brooklyn', 'Chinatown']
   }],
   [{
     color: 'grey',
     num: 3,
     taken: false,
-    special: 'bottom-right'
+    nodes: ['Brooklyn', 'Lower East Side']
   }]
 ]
 
@@ -310,15 +346,122 @@ const startingDeck = {
   wild: 8
 }
 
-const startingDestinations = {
-
-}
+const defaultDestinations = [
+  {
+    start: 'United Nations',
+    end: 'Wall Street',
+    taken: false,
+    points: 8
+  },
+  {
+    start: 'Lincoln Center',
+    end: 'Greenwich Village',
+    taken: false,
+    points: 6
+  },
+  {
+    start: 'Times Square',
+    end: 'East Village',
+    taken: false,
+    points: 4
+  },
+  {
+    start: 'Lower East Side',
+    end: 'Wall Street',
+    taken: false,
+    points: 2
+  },
+  {
+    start: 'East Village',
+    end: 'Soho',
+    taken: false,
+    points: 4
+  },
+  {
+    start: 'Empire State Building',
+    end: 'Greenwich Village',
+    taken: false,
+    points: 3
+  },
+  {
+    start: 'Chelsea',
+    end: 'Brooklyn',
+    taken: false,
+    points: 8
+  },
+  {
+    start: 'Central Park',
+    end: 'Midtown West',
+    taken: false,
+    points: 3
+  },
+  {
+    start: 'Central Park',
+    end: 'Gramercy Park',
+    taken: false,
+    points: 4
+  },
+  {
+    start: 'Lincoln Center',
+    end: 'Empire State Building',
+    taken: false,
+    points: 3
+  },
+  {
+    start: 'Times Square',
+    end: 'Soho',
+    taken: false,
+    points: 6
+  },
+  {
+    start: 'Empire State Building',
+    end: 'Brooklyn',
+    taken: false,
+    points: 7
+  },
+  {
+    start: 'Central Park',
+    end: 'Chelsea',
+    taken: false,
+    points: 5
+  },
+  {
+    start: 'Chelsea',
+    end: 'Wall Street',
+    taken: false,
+    points: 6
+  },
+  {
+    start: 'Central Park',
+    end: 'Chinatown',
+    taken: false,
+    points: 8
+  },
+  {
+    start: 'Times Square',
+    end: 'Brooklyn',
+    taken: false,
+    points: 8
+  },
+  {
+    start: 'United Nations',
+    end: 'Midtown West',
+    taken: false,
+    points: 3
+  },
+  {
+    start: 'Gramercy Park',
+    end: 'Chinatown',
+    taken: false,
+    points: 4
+  },
+]
 
 module.exports = {
   defaultPaths: paths,
   pathsLogic,
   defaultTokens: tokens,
   startingDeck,
-  startingDestinations,
+  defaultDestinations,
   cards
 }
