@@ -73,7 +73,9 @@
     min-width: 3em;
 }
 
-
+.card.card-selected {
+    top: -5px;
+}
 
 .cards-area ul {
     width: 90%;

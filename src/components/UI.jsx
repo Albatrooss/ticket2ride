@@ -4,7 +4,7 @@ import '../styles/UI.css';
 import CardsArea from './CardsArea';
 import Hand from './Hand';
 
-export default function UI({ waiting, turn, user, users, logic, dealStarterCards, handleTakeFromDeck, handleTakeCard, handleAddCards, handleDiscard, discardDCard }) {
+export default function UI({ waiting, turn, user, users, selectedCards, logic, dealStarterCards, handleTakeFromDeck, handleTakeCard, handleAddCards, handleSelectCard, discardDCard }) {
   return (
     <div className="ui">
       {waiting ? (user.host ?
@@ -27,7 +27,8 @@ export default function UI({ waiting, turn, user, users, logic, dealStarterCards
       {user.hand &&
         <Hand
           cards={user.hand.sort()}
-          handleDiscard={handleDiscard}
+          selectedCards={selectedCards}
+          handleSelectCard={handleSelectCard}
         />}
 
       {waiting && <h3>Pick your Destination Cards</h3>}

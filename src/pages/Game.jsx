@@ -23,6 +23,7 @@ export default function Game({ reload, load }) {
   const [users, setUsers] = useState({});
   const [user, setUser] = useState({ cards: [], dCards: [] })
   const [myTurn, setMyTurn] = useState(false);
+  const [selectedCards, setSelectedCards] = useState([]);
 
   const history = useHistory();
 
@@ -44,22 +45,14 @@ export default function Game({ reload, load }) {
 
       let hand = user.hand;
       let path = defaultPaths[outerKey][innerKey];
+      let numberOfTaxis = path.num;
 
+      // Check if path is taken || the other line is taken by you || you have enough taxis
       if (paths[`${outerKey}-${innerKey}`] || other === user.color || taxis > user.taxis) return;
 
-      // If its a grey path...
 
-      if (path.color === 'grey') {
-
-      } else {
-        // Check you have the cards for it
-        let noCards = hand.filter(x => x === path.color || x === 'wild').length < path.num;
-        // Check if path is taken || the other line is taken by you || have enough taxis
-        if (noCards) return
-
-      }
-
-
+      // Check you have selected the cards for it\
+      if (selectedCards.length < numberOfTaxis) return
 
       let routes = [...user.routes];
       routes.push(path.nodes.join('-'));
@@ -67,22 +60,19 @@ export default function Game({ reload, load }) {
 
       //Discard cards used
       let discard = logic.discard ? [...logic.discard] : [];
-      let num = path.num;
-      for (let i = 0; i < num; i++) {
-        let ind = hand.indexOf(path.color);
-        if (ind >= 0) {
+      let newHandFilter = []
+      selectedCards.forEach(ind => {
+        if (numberOfTaxis > 0) {
           discard.push(hand[ind]);
-          hand.splice(ind, 1);
-        } else {
-          ind = hand.indexOf('wild');
-          discard.push(hand[ind]);
-          hand.splice(ind, 1);
+          newHandFilter.push(ind);
+          numberOfTaxis--;
         }
-      }
+      })
+      console.log(newHandFilter, hand);
+      hand = hand.filter((x, i) => !newHandFilter.includes(i))
 
       // Check if your destination cards are good
       let dCards = [];
-
       user.dCards.forEach(d => {
         if (d.connected) return dCards.push(d);
         let connected = (checkConnected(d.start, d.end, routes) || checkConnected(d.end, d.start, routes));
@@ -98,10 +88,14 @@ export default function Game({ reload, load }) {
       turn++;
       turn = turn % logic.order.length;
 
+      // Send to DB
       await Promise.all([
         db.collection(id).doc(user.id).update({ routes, taxis: user.taxis - taxis, points: user.points + points, dCards, hand }),
         db.collection(id).doc('logic').update({ paths, turn, discard })
       ])
+
+      //Reset locally
+      setSelectedCards([]);
       setMyTurn(false);
     } catch (err) {
       console.log(err);
@@ -199,6 +193,38 @@ export default function Game({ reload, load }) {
     await Promise.all([db.collection(id).doc('logic').update({ deck, showing, moves, turn }), db.collection(id).doc(user.id).update({ hand })]);
   }
 
+  const handleSelectCard = index => {
+    let prev = [...selectedCards];
+    // Can only use one Wild Card
+    if (prev.some(x => user.hand[x] === 'wild') && user.hand[index] === 'wild') return;
+    // If empty or wild push 
+    if (prev.length < 1 || user.hand[index] === 'wild') {
+      prev.push(index);
+    } else if (prev.includes(index)) { // If click the same, deselect
+      let ind = prev.indexOf(index);
+      prev.splice(ind, 1);
+    } else if (user.hand[prev[0]] === 'wild') { // If the first is wild, push if only card, compare to second if longer
+      if (prev.length === 1) {
+        prev.push(index);
+      } else {
+        let thisColor = user.hand[prev[1]];
+        if (thisColor !== user.hand[index]) {
+          prev = [index];
+        } else {
+          prev.push(index);
+        }
+      }
+    } else {
+      let thisColor = user.hand[prev[0]];
+      if (thisColor !== user.hand[index]) {
+        prev = [index];
+      } else {
+        prev.push(index);
+      }
+    }
+    setSelectedCards(prev)
+  }
+
   const handleDiscard = async ind => {
     if (!myTurn) return;
     let discard = logic.discard ? [...logic.discard] : [];
@@ -265,11 +291,13 @@ export default function Game({ reload, load }) {
           waiting={logic.waiting}
           turn={myTurn}
           user={user}
+          selectedCards={selectedCards}
           users={users}
           logic={logic}
           dealStarterCards={dealStarterCards}
           handleTakeFromDeck={handleTakeFromDeck}
           handleTakeCard={handleTakeCard}
+          handleSelectCard={handleSelectCard}
           handleAddCards={handleAddCards}
           handleDiscard={handleDiscard}
           discardDCard={discardDCard}
