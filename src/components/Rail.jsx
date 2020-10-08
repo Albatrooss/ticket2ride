@@ -1,16 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/rails.css';
 
-function convertPoints(num) {
-  if (num < 3) {
-    return num;
-  } else if (num === 3) {
-    return 4;
-  } else {
-    return 7
-  }
-}
-
 function Line({ data, outerKey, innerKey, handleClaimLine, color, other }) {
 
   const [hovered, setHovered] = useState(false);
@@ -38,7 +28,7 @@ export default function Rail({ data, myKey, handleClaimLine, color }) {
 
   const lines = data.map((line, i) => {
     let other = i === 0 ? data[1] : data[0];
-    return <Line data={line} outerKey={myKey} innerKey={i} handleClaimLine={handleClaimLine} color={color} other={data.length > 1 ? other : false} />
+    return <Line data={line} key={i} outerKey={myKey} innerKey={i} handleClaimLine={handleClaimLine} color={color} other={data.length > 1 ? other : false} />
   })
 
   return (

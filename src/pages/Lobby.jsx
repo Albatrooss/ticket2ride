@@ -131,7 +131,7 @@ export default function Lobby() {
     return () => {
       unsubscribe();
     }
-  }, [id])
+  }, [id, history])
 
   return (
     <>
@@ -151,7 +151,6 @@ export default function Lobby() {
       {host && <>
         <p>YOU ARE THE HOST</p>
         <button onClick={startGame}>Start Game</button>
-        <button onClick={() => dealDCards(users[0])}>CLICK ME</button>
       </>}
     </>
   )

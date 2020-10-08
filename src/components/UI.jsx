@@ -35,8 +35,8 @@ export default function UI({ waiting, turn, user, users, selectedCards, logic, d
       {/* Destination cards*/}
 
       < ul className="ui-d-list" >
-        {user.dCards && user.dCards.map((d, i) => <li>
-          <div key={`${d.start}${i}`} className={`${d.connected ? 'connected' : ''}`}>
+        {user.dCards && user.dCards.map((d, i) => <li key={`${d.start}${i}`}>
+          <div className={`${d.connected ? 'connected' : ''}`}>
             {d.start}
             <br />-to-<br />
             {d.end}

@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import fire from '../firebase';
 import tokenService from '../util/tokenService';
 
-import { pathsLogic, startingDeck, defaultDestinations, defaultPaths } from '../game/gameDefault';
+import { pathsLogic, startingDeck, defaultDestinations } from '../game/gameDefault';
 
 const db = fire.firestore();
 

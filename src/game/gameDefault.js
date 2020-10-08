@@ -1,3 +1,66 @@
+const lines = [
+  {
+    node: 'Lincoln Center',
+    connections: ['Midtown West', 'Times Square', 'Central Park']
+  },
+  {
+    node: 'Midtown West',
+    connections: ['Lincoln Center', 'Times Square', 'Empire State Building', 'Chelsea']
+  },
+  {
+    node: 'Times Square',
+    connections: ['Midtown West', 'Lincoln Center', 'Central Park', 'United Nations', 'Empire State Building']
+  },
+  {
+    node: 'Central Park',
+    connections: ['Lincoln Center', 'Times Square', 'United Nations']
+  },
+  {
+    node: 'United Nations',
+    connections: ['Central Park', 'Times Square', 'Empire State Building', 'Gramercy Park']
+  },
+  {
+    node: 'Empire State Building',
+    connections: ['Midtown West', 'Times Square', 'United Nations', 'Gramercy Park', 'Chelsea']
+  },
+  {
+    node: 'Chelsea',
+    connections: ['Midtown West', 'Empire State Building', 'Gramercy Park', 'Greenwich Village', 'Soho']
+  },
+  {
+    node: 'Gramercy Park',
+    connections: ['ESP', 'Chelsea', 'United Nations', 'East Village', 'Greenwich Village']
+  },
+  {
+    node: 'Greenwich Village',
+    connections: ['Chelsea', 'Gramercy Park', 'East Village', 'Lower East Side', 'Chinatown', 'Soho']
+  },
+  {
+    node: 'East Village',
+    connections: ['Gramercy Park', 'Greenwich Village', 'Lower East Side']
+  },
+  {
+    node: 'Lower East Side',
+    connections: ['East Village', 'Greenwich Village', 'Chinatown', 'Brooklyn']
+  },
+  {
+    node: 'Soho',
+    connections: ['Chelsea', 'Greenwich Village', 'Wall Street']
+  },
+  {
+    node: 'Chinatown',
+    connections: ['Greenwich Village', 'Lower East Side', 'Brooklyn', 'Wall Street']
+  },
+  {
+    node: 'Wall Street',
+    connections: ['Soho', 'Chinatown', 'Brooklyn']
+  },
+  {
+    node: 'Brooklyn',
+    connections: ['Wall Street', 'Chinatown', 'Lower East Side']
+  }
+]
+
 const paths = [
   //0
   [{
@@ -528,6 +591,7 @@ const defaultDestinations = [
 ]
 
 module.exports = {
+  lines,
   defaultPaths: paths,
   pathsLogic,
   defaultTokens: tokens,

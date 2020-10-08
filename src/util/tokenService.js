@@ -39,7 +39,7 @@ function removeToken() {
   localStorage.removeItem('token');
 }
 
-module.exports = {
+export default {
   createJWT,
   setToken,
   setTokenFromUser,

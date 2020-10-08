@@ -82,7 +82,6 @@ function checkConnected(startingNode, endingNode, routes = []) {
 
     // push the first path [start]-[end] and [end]-[start] onto used list, so it wont be checked again
     usedPaths.push(paths[0]);
-    console.log(usedPaths[usedPaths.length - 1]);
     usedPaths.push(paths[0].split('-')[1] + '-' + paths[0].split('-')[0]);
 
     //recursively check the next node on the list
@@ -93,9 +92,7 @@ function checkConnected(startingNode, endingNode, routes = []) {
   return answer;
 }
 
-console.log(checkConnected('Central Park', 'Gramercy Park', ['United Nations-Central Park', 'United Nations-Gramercy Park']))
-
-
-module.exports = {
-  lines
+export default {
+  lines,
+  checkConnected
 }

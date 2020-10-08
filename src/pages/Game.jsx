@@ -6,8 +6,7 @@ import Board from '../components/Board';
 import UI from '../components/UI';
 
 import tokenService from '../util/tokenService';
-import { defaultPaths, startingDeck } from '../game/gameDefault';
-import { lines } from '../util/traffic';
+import { defaultPaths, startingDeck, lines } from '../game/gameDefault';
 
 const db = firebase.firestore();
 
@@ -275,7 +274,7 @@ export default function Game({ reload, load }) {
     return () => {
       unsubscribe();
     }
-  }, [load])
+  }, [load, id, history])
 
   return (
     <>
