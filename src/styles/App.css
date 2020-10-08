@@ -1,74 +1,102 @@
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  --red: red;
-  --green: green;
-  --black: #333;
-  --blue: blue;
-  --orange: orange;
-  --pink: pink;
-  --grey: #ddd;
-}
-.App {
+#root {
+  width: 100%;
   text-align: center;
+}
+
+.App {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  min-height: 100vh;
-
-  background-color: #d3d3d3;
+  width: 100%;
 }
-
-.red {
-  background-color: var(--red);
-}
-
-.green {
-  background-color: var(--green);
-}
-
-.black {
-  background-color: var(--black);
-}
-
-.blue {
-  background-color: var(--blue);
-}
-
-.orange {
-  background-color: var(--orange);
-}
-.pink {
-  background-color: var(--pink);
-}
-.grey {
-  background-color: var(--grey);
-}
+/*================================================================
+              BOARD
+================================================================*/
 
 .board {
-  height: 80vh;
+  height: min(133.33vw, 80vh);
   width: min(100vw, 60vh);
-  border: 5px solid #fafafa;
-  border-radius: 5px;
+  border: 1px solid black;
 
   position: relative;
   display: flex;
   flex-wrap: wrap;
+
+  background-image: url('/images/Map-01.png');
+  background-size: 100%;
+  background-position: bottom;
+
 }
 
-.board img {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
+.ui {
+  height: min(133.33vw, 80vh);
+  width: min(100vw, 60vh);
+  border: 1px solid black;
+
+}
+
+.line {
+  display: flex;
+}
+
+.square:hover {
+  cursor: pointer;
+}
+
+.square {
+  width: calc(min(100vw, 60vh) / 12);
+  height: 2.2vh;
+  border: 1px solid white;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3;
+}
+
+.red {
+  background-color: #D22222;
+}
+
+.green {
+  background-color: #80DE2D;
+}
+
+.black {
+  background-color: #333;
+}
+
+.blue {
+  background-color: #33A3DA;
+}
+
+.orange {
+  background-color: #E6C41C;
+}
+.pink {
+  background-color: #EFAED7;
+}
+.grey {
+  background-color: #bbb;
+}
+
+.wild {
+  background-color: thistle;
+}
+
+.deck {
+  background-color: #555;
 }
 
 .taxi {
   width: 80%;
   height: 80%; 
+  border: 1px solid black;
+}
+
+.hovered-taxi {
+  width: 80%;
+  height: 80%; 
+  border: 1px solid black;
+  opacity: 0.6;
 }

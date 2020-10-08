@@ -3,14 +3,17 @@ import { useHistory, useParams } from 'react-router-dom';
 import fire from '../firebase';
 import tokenService from '../util/tokenService';
 
-import { defaultDestinations } from '../game/gameDefault';
-
 const db = fire.firestore();
+
+const allColors = ['blue', 'red', 'green', 'yellow'];
 
 export default function Lobby() {
 
   const { id } = useParams();
   const [username, setUsername] = useState('');
+  const [color, setColor] = useState('');
+  const [colorOptions, setColorOptions] = useState([]);
+  const [takenColors, setTakenColors] = useState([]);
   const [users, setUsers] = useState([]);
   const [errMsg, setErrMsg] = useState('');
   const [host, setHost] = useState(false);
@@ -25,6 +28,7 @@ export default function Lobby() {
       setErrMsg('Username allready taken');
     } else {
       db.collection(id).doc(username).set({
+        color,
         hand: [],
         routes: [],
         dCards: [],
@@ -52,9 +56,8 @@ export default function Lobby() {
   }
 
   const startGame = async () => {
-    let thisId = userToken.username;
+    await db.collection(id).doc('logic').update({ order: shuffle(takenColors) });
     await dealDCards();
-    await db.collection(id).doc(thisId).update({ gameOn: true })
   }
 
   const dealDCards = async () => {
@@ -75,7 +78,7 @@ export default function Lobby() {
     }
 
 
-    db.collection(id).doc('logic').update({ destinations: dests });
+    db.collection(id).doc('logic').update({ destinations: dests, gameOn: true });
     console.log(logic, users);
   }
 
@@ -103,6 +106,17 @@ export default function Lobby() {
           }
         })
         setUsers(usersList);
+
+        //assign taken colors
+        let takenCols = [];
+        usersList.forEach(u => takenCols.push(u.color));
+        setTakenColors(takenCols)
+
+        //figure out which colors are available
+        let colOpts = allColors.filter(c => !takenCols.includes(c));
+        setColorOptions(colOpts);
+        setColor(colOpts[0]);
+
         const myToken = tokenService.getUserFromToken();
         if (myToken) {
           if (!userList.some(x => x.id === myToken.username)) {
@@ -129,6 +143,9 @@ export default function Lobby() {
       {!userToken && <>
         <p style={{ color: 'red' }}>{errMsg}</p>
         <input type="text" value={username} onChange={e => setUsername(e.target.value)} />
+        <select onChange={e => setColor(e.target.value)}>
+          {colorOptions.map(c => <option value={c}>{c}</option>)}
+        </select>
         <button onClick={joinLobby}>Join</button>
       </>}
       {host && <>
@@ -138,4 +155,24 @@ export default function Lobby() {
       </>}
     </>
   )
+}
+
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
 }

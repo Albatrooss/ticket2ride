@@ -1,0 +1,30 @@
+.ui {
+    background-color: darkgreen;
+}
+
+.ui-d-list {
+    list-style: none;
+
+    display: flex;
+}
+
+.ui-d-list li div {
+    height: 80px;
+    width: 50px;
+
+    font-size: .8em;
+
+    display: flex;
+    align-items: center;
+
+    border: 1px solid #333;
+    background-color: #ddd;
+    margin: 0 10px;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.taxi-icon {
+    width: 50px;
+    border-radius: 5px;
+}

@@ -1,16 +1,19 @@
 const paths = [
+  //0
   [{
     color: 'orange',
     num: 2,
     taken: false,
     nodes: ['Lincoln Center', 'Central Park']
   }],
+  //1
   [{
     color: 'red',
     num: 2,
     taken: false,
     nodes: ['Lincoln Center', 'Midtown West']
   }],
+  //2
   [{
     color: 'green',
     num: 2,
@@ -23,6 +26,7 @@ const paths = [
     taken: false,
     nodes: ['Lincoln Center', 'Times Square']
   }],
+  //3
   [{
     color: 'black',
     num: 2,
@@ -35,36 +39,42 @@ const paths = [
     taken: false,
     nodes: ['Times Square', 'Central Park']
   }],
+  //4
   [{
     color: 'pink',
     num: 3,
     taken: false,
     nodes: ['United Nations', 'Central Park']
   }],
+  //5
   [{
     color: 'grey',
     num: 1,
     taken: false,
     nodes: ['Midtown West', 'Times Square']
   }],
+  //6
   [{
     color: 'grey',
     num: 2,
     taken: false,
     nodes: ['Times Square', 'United Nations']
   }],
+  //7
   [{
     color: 'blue',
     num: 2,
     taken: false,
     nodes: ['Midtown West', 'Chelsea']
   }],
+  //8
   [{
     color: 'green',
     num: 2,
     taken: false,
     nodes: ['Midtown West', 'Empire State Building']
   }],
+  //9
   [{
     color: 'orange',
     num: 1,
@@ -77,6 +87,7 @@ const paths = [
     taken: false,
     nodes: ['Times Square', 'Empire State Building']
   }],
+  //10
   [{
     color: 'grey',
     num: 2,
@@ -89,12 +100,14 @@ const paths = [
     taken: false,
     nodes: ['Chelsea', 'Empire State Building']
   }],
+  //11
   [{
     color: 'black',
     num: 2,
     taken: false,
     nodes: ['United Nations', 'Empire State Building']
   }],
+  //12
   [{
     color: 'red',
     num: 1,
@@ -107,18 +120,21 @@ const paths = [
     taken: false,
     nodes: ['Gramercy Park', 'Empire State Building']
   }],
+  //13
   [{
     color: 'green',
     num: 3,
     taken: false,
     nodes: ['United Nations', 'Gramercy Park']
   }],
+  //14
   [{
     color: 'pink',
     num: 4,
     taken: false,
     nodes: ['Chelsea', 'Soho']
   }],
+  //15
   [{
     color: 'green',
     num: 3,
@@ -131,12 +147,14 @@ const paths = [
     taken: false,
     nodes: ['Chelsea', 'Greenwich Village']
   }],
+  //16
   [{
     color: 'orange',
     num: 2,
     taken: false,
     nodes: ['Chelsea', 'Gramercy Park']
   }],
+  //17
   [{
     color: 'black',
     num: 2,
@@ -149,24 +167,29 @@ const paths = [
     taken: false,
     nodes: ['Gramercy Park', 'Greenwich Village']
   }],
+  //18
   [{
     color: 'grey',
     num: 2,
     taken: false,
     nodes: ['Gramercy Park', 'East Village']
   }],
+  //19
   [{
     color: 'blue',
     num: 2,
     taken: false,
     nodes: ['Greenwich Village', 'East Village']
   }],
+  //20
   [{
     color: 'orange',
     num: 2,
     taken: false,
     nodes: ['Soho', 'Greenwich Village']
   }],
+
+  //21
   [{
     color: 'grey',
     num: 2,
@@ -179,24 +202,28 @@ const paths = [
     taken: false,
     nodes: ['Chinatown', 'Greenwich Village']
   }],
+  //22
   [{
     color: 'grey',
     num: 2,
     taken: false,
     nodes: ['Lower East Side', 'Greenwich Village']
   }],
+  //23
   [{
     color: 'black',
     num: 1,
     taken: false,
     nodes: ['East Village', 'Lower East Side']
   }],
+  //24
   [{
     color: 'blue',
     num: 1,
     taken: false,
     nodes: ['Lower East Side', 'Chinatown']
   }],
+  //25
   [{
     color: 'green',
     num: 1,
@@ -209,6 +236,7 @@ const paths = [
     taken: false,
     nodes: ['Chinatown', 'Wall Street']
   }],
+  //26
   [{
     color: 'black',
     num: 3,
@@ -221,6 +249,7 @@ const paths = [
     taken: false,
     nodes: ['Brooklyn', 'Wall Street']
   }],
+  //27
   [{
     color: 'red',
     num: 3,
@@ -233,11 +262,12 @@ const paths = [
     taken: false,
     nodes: ['Brooklyn', 'Chinatown']
   }],
+  //28
   [{
     color: 'grey',
     num: 3,
     taken: false,
-    nodes: ['Brooklyn', 'Lower East Side']
+    nodes: ['Brooklyn', 'Soho']
   }]
 ]
 
@@ -331,20 +361,60 @@ const cards = [
   }
 ]
 
-let pathsLogic = [];
-for (let i = 0; i < 30; i++) {
-  pathsLogic.push(false);
-}
+let pathsLogic = {};
 
-const startingDeck = {
-  red: 6,
-  blue: 6,
-  orange: 6,
-  green: 6,
-  black: 6,
-  pink: 6,
-  wild: 8
-}
+paths.forEach((p, a) => {
+  p.forEach((x, b) => {
+    pathsLogic[`${a}-${b}`] = false
+  })
+})
+
+const startingDeck = [
+  'red',
+  'red',
+  'red',
+  'red',
+  'red',
+  'red',
+  'blue',
+  'blue',
+  'blue',
+  'blue',
+  'blue',
+  'blue',
+  'orange',
+  'orange',
+  'orange',
+  'orange',
+  'orange',
+  'orange',
+  'green',
+  'green',
+  'green',
+  'green',
+  'green',
+  'green',
+  'black',
+  'black',
+  'black',
+  'black',
+  'black',
+  'black',
+  'pink',
+  'pink',
+  'pink',
+  'pink',
+  'pink',
+  'pink',
+  'wild',
+  'wild',
+  'wild',
+  'wild',
+  'wild',
+  'wild',
+  'wild',
+  'wild',
+]
 
 const defaultDestinations = [
   {

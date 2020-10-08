@@ -61,30 +61,41 @@ const lines = [
   }
 ]
 
-function checkConnected(user, num) {
-  let used = [];
+function checkConnected(startingNode, endingNode, routes = []) {
+  let usedPaths = []
   let answer = false;
-  let myNodes = user.routes;
-  let s = user.dCards[num].start;
-  let e = user.dCards[num].end;
-  if (!myNodes.includes(s) || !myNodes.includes(e)) return false
 
-  test(s);
+  let myRoutes = [...routes]
+  routes.forEach(r => myRoutes.push(r.split('-')[1] + '-' + r.split('-')[0]))
+
+  if (!myRoutes.some(r => r.split('-').includes(startingNode)) || !myRoutes.some(r => r.split('-').includes(endingNode))) return false;
+
+  test(startingNode)
 
   function test(newStart) {
-    if (newStart === e) {
-      answer = true;
-    }
-    used.push(newStart);
-    let start = lines.find(l => l.node === newStart);
-    start.connections.filter(n => myNodes.includes(n) && !used.includes(n)).forEach(n => {
-      test(n, e);
-    })
+
+    if (answer) return;
+
+    let line = lines.find(l => l.node === newStart);
+    let paths = line.connections.map(c => `${newStart}-${c}`).filter(p => myRoutes.includes(p) && !usedPaths.includes(p));
+    if (paths.length < 1) return
+
+    // push the first path [start]-[end] and [end]-[start] onto used list, so it wont be checked again
+    usedPaths.push(paths[0]);
+    console.log(usedPaths[usedPaths.length - 1]);
+    usedPaths.push(paths[0].split('-')[1] + '-' + paths[0].split('-')[0]);
+
+    //recursively check the next node on the list
+    if (paths.some(p => p.split('-')[1] === endingNode)) return answer = true;
+    paths.forEach(p => test(p.split('-')[1]));
   }
 
   return answer;
 }
 
+console.log(checkConnected('Central Park', 'Gramercy Park', ['United Nations-Central Park', 'United Nations-Gramercy Park']))
+
+
 module.exports = {
-  checkConnected
+  lines
 }

@@ -1,35 +1,94 @@
 .hand-container {
-    width: 50%;
+    width: calc(100% - 40px);
+    height: 100px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin: 20px;
 }
 .hand {
     position: relative;
     width: 100%;
+    display: flex;
+    list-style: none;
+    max-width: 35em;
+    height: 6em;
+    padding: 0;
 }
-.card:hover {
-    top: -20px;
+
+.hand li {
+    overflow: hidden;
+    height: 6em;
+    padding-top: 10px;
+}
+
+.hand li:last-child,
+.hand li:hover {
+    overflow: visible;
     cursor: pointer;
 }
 
-.card {
-    width: 5vw;
-    height: 7vw;
-    border-radius: 10px;
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
+.deck.card:hover {
+    top: 0px;
 }
 
-.card::after {
+.deck::after {
     content: '';
     width: 86%;
     height: 90%;
     border: 2px solid white;
-    border-radius: 7px;
+    border-radius: 5px;
     box-sizing: border-box;
 
     position: absolute;
     left: 7%;
     top: 5%;
+}
+
+.card p {
+    margin: 0;
+    text-align: center;
+    color: white;
+}
+
+.card {
+    cursor: pointer;
+    width: 4em;
+    min-width: 4em;
+    height: 5em;
+    border-radius: 5px;
+    border: solid 2px #fff;
+    padding: 0.25em;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.cards-area ul li .card {
+    width: 3em;
+    min-width: 3em;
+}
+
+
+
+.cards-area ul {
+    width: 90%;
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    padding: 10px;
+
+    list-style: none;
+}
+
+.buffer {
+    width: 10px;
+}
+
+.ui-d-list li div.connected {
+    background-color: greenyellow;
 }

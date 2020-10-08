@@ -1,3 +1,32 @@
+.token {
+    position: absolute;
+    color: #FFF;
+    font-weight: bolder;
+    font-family: sans-serif;
+    background: linear-gradient(rgb(226, 165, 33) 21%, rgba(162,129,38,1));
+    opacity: .6;
+    width: 5%;
+    border: 2px solid white;
+    border-radius: 50%;
+
+    display: flex;
+    place-items: center;
+    justify-content: center;
+    font-size: 100%
+}
+.token::after {
+    content: '';
+    display: block;
+    padding-bottom: 100%;
+}
+
+.glowing {
+    box-shadow: 0 0 10px red;
+    -webkit-box-shadow: 0 0 15px purple;
+    border: 2px solid black;
+    opacity: 1;
+}
+
 /* LINCOLN CENTER */
 .token-0 {
     top: 2%;
@@ -92,6 +121,10 @@
     font-size: .9em;
 }
 
+.glowing p {
+    font-size: 1.1em;
+}
+
 .p-0 {
     left: -260%;
     right: 500%;
@@ -103,9 +136,9 @@
 }
 
 .p-2 {
-    left: -330%;
-    top: -125%;
-    /* right: 500%; */
+    left: -240%;
+    top: -100%;
+    width: 5vh;
     text-align: center;
 }
 
@@ -126,9 +159,9 @@
 }
 
 p.p-6 {
-    left: 40%;
-    top: 0%;
-    width: 10vw;
+    left: 120%;
+    top: -15%;
+    width: 6vw;
     font-size: .7em;
     transform: rotate(-10deg);
     margin: 0;
@@ -164,9 +197,9 @@ p.p-8 {
 }
 
 .p-12 {
-    left: 60%;
+    left: 90%;
     top: -60%;
-    width: 10vw;
+    width: 6vw;
 }
 
 .p-13 {
@@ -178,3 +211,4 @@ p.p-8 {
     left: -20%;
     top: 70%;
 }
+
