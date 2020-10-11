@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom';
+import '../styles/lobby.css';
+
 import fire from '../firebase';
 import tokenService from '../util/tokenService';
 
@@ -18,12 +20,19 @@ export default function Lobby() {
   const [errMsg, setErrMsg] = useState('');
   const [host, setHost] = useState(false);
   const [logic, setLogic] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
 
   const userToken = tokenService.getUserFromToken();
 
   const history = useHistory();
 
-  const joinLobby = () => {
+  const joinLobby = e => {
+    e.preventDefault();
+    if (users.length > 3) {
+      setErrMsg('Lobby Full..')
+      return;
+    }
     if (users.some(u => u.id === username)) {
       setErrMsg('Username allready taken');
     } else {
@@ -34,7 +43,8 @@ export default function Lobby() {
         dCards: [],
         points: 0,
         taxis: 17,
-        host: users.length > 0 ? false : true
+        host: users.length > 0 ? false : true,
+        ready: false
       });
       tokenService.setTokenFromUser(username);
       setUsername('');
@@ -72,9 +82,10 @@ export default function Lobby() {
 
     function dealOne(u) {
       available = dests.filter(x => !x.taken);
-      let card = available[Math.floor(Math.random() * available.length)];
+      let index = Math.floor(Math.random() * available.length)
+      let card = available[index];
       dests.find(c => c.start === card.start && c.end === card.end).taken = true;
-      u.dCards = [...u.dCards, { start: card.start, end: card.end, connected: false }];
+      u.dCards = [...u.dCards, { start: card.start, end: card.end, connected: false, points: card.points }];
     }
 
 
@@ -82,20 +93,49 @@ export default function Lobby() {
     console.log(logic, users);
   }
 
-  const usersList = users.map(u =>
-    <li key={u.id}>{u.id}{u.host ? '-HOST' : ''}
-      {userToken && userToken.username === u.id ? <button onClick={() => leaveLobby(u.id)}>X</button> : ''}
-    </li>
-  )
+  const usersList = [];
+  for (let i = 0; i < 4; i++) {
+    usersList.push(
+      users[i] ? <li >
+        {i + 1}.<span className={`color-${users[i].color}`}>{users[i].id} {users[i].host ? '(host)' : ''}</span>
+        {userToken && userToken.username === users[i].id ? <button onClick={() => leaveLobby(users[i].id)}><div className='x' /><div className='x' /></button> : ''}
+      </li> : <li className="blank-li">{i + 1}. --empty slot--</li>
+    )
+  }
+
+  const copyToClipboard = text => {
+    console.log('test', text);
+    let textField = document.createElement('textarea');
+    textField.innerText = text;
+    document.body.appendChild(textField);
+    textField.select();
+    document.execCommand('copy');
+    textField.remove();
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1000);
+  }
 
   useEffect(() => {
+    let check = async () => {
+      let c = await db.collection(id).get();
+      if (c.docs.length < 1) history.push('/');
+      localStorage.setItem('message', 'Lobby not found..');
+
+      setLoading(false);
+      return true;
+    }
     const unsubscribe = db.collection(id).onSnapshot(snap => {
       const userList = snap.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }))
       if (userList.findIndex(x => x.gameOn) >= 0) {
-        history.push(`/${id}/game`);
+        if (userToken) {
+          history.push(`/${id}/game`);
+        } else {
+          localStorage.setItem('message', 'Game in progress..')
+          history.push('/');
+        }
       } else {
         let usersList = [];
         userList.forEach(x => {
@@ -128,32 +168,48 @@ export default function Lobby() {
         }
       }
     })
+    check();
     return () => {
       unsubscribe();
     }
   }, [id, history])
 
-  return (
-    <>
-      <h2>Game {id} Lobby</h2>
-      <h4>Users:</h4>
-      <ul>
-        {usersList}
-      </ul>
-      {!userToken && <>
-        <p style={{ color: 'red' }}>{errMsg}</p>
-        <input type="text" value={username} onChange={e => setUsername(e.target.value)} />
-        <select onChange={e => setColor(e.target.value)}>
-          {colorOptions.map(c => <option value={c}>{c}</option>)}
-        </select>
-        <button onClick={joinLobby}>Join</button>
-      </>}
-      {host && <>
-        <p>YOU ARE THE HOST</p>
-        <button onClick={startGame}>Start Game</button>
-      </>}
-    </>
-  )
+  return loading ? (
+    <h1>Loading...</h1>
+  ) : (
+      <main className="main-lobby">
+        <div className="writing">
+          <h2>Welcome to the Lobby!</h2>
+          <p>Copy and paste this link to your friends to invite them to play!</p>
+          <span onClick={() => copyToClipboard(`https://ticket-to-ride.netlify.app/${id.replace(/\s/g, '%20')}`)} className="link">https://ticket-to-ride.netlify.app/{id.replace(/\s/g, '%20')}{copied && <p className="copied">Copied!</p>}</span>
+        </div>
+        <div className="user-list">
+          <h4>Users:</h4>
+          <ul>
+            {usersList}
+          </ul>
+          {!userToken && <>
+            <p style={{ color: 'red' }}>{errMsg}</p>
+            <div className="form-wrapper">
+              <form onSubmit={joinLobby}>
+                <div>
+                  <input type="text" value={username} id="username" onChange={e => setUsername(e.target.value)} />
+                  <label htmlFor="username" className={username ? 'filled' : ''}><span>Username</span></label>
+                </div>
+                <select onChange={e => setColor(e.target.value)}>
+                  {colorOptions.map(c => <option value={c}>{c}</option>)}
+                </select>
+                <button type="submit">Join</button>
+              </form>
+            </div>
+          </>}
+          {host ?
+            <button className="start-game-btn" onClick={startGame}>Start Game</button> :
+            <>{userToken ? <p>Waiting for the host to start the game..</p> : <></>}</>
+          }
+        </div>
+      </main>
+    )
 }
 
 

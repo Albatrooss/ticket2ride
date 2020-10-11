@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useHistory } from 'react-router-dom';
+import '../styles/game.css';
+
 import firebase from '../firebase';
 
 import Board from '../components/Board';
 import UI from '../components/UI';
+import EndGame from '../components/EndGame';
 
 import tokenService from '../util/tokenService';
-import { defaultPaths, startingDeck, lines } from '../game/gameDefault';
+import { defaultPaths, startingDeck, lines, defaultTokens } from '../game/gameDefault';
 
 const db = firebase.firestore();
 
@@ -19,10 +22,11 @@ export default function Game({ reload, load }) {
   const { id } = useParams();
 
   const [logic, setLogic] = useState({ paths: [] });
-  const [users, setUsers] = useState({});
+  const [users, setUsers] = useState([]);
   const [user, setUser] = useState({ cards: [], dCards: [] })
   const [myTurn, setMyTurn] = useState(false);
   const [selectedCards, setSelectedCards] = useState([]);
+  const [possibleDCards, setPossibleDCards] = useState([]);
 
   const history = useHistory();
 
@@ -36,7 +40,7 @@ export default function Game({ reload, load }) {
   //        Rail functions
   //==================================================================================================================
 
-  const handleClaimLine = async (outerKey, innerKey, taxis, other) => {
+  const handleClaimLine = async (outerKey, innerKey, other) => {
     if (!myTurn || logic.waiting || logic.moves > 0) return;
 
     try {
@@ -47,7 +51,7 @@ export default function Game({ reload, load }) {
       let numberOfTaxis = path.num;
 
       // Check if path is taken || the other line is taken by you || you have enough taxis
-      if (paths[`${outerKey}-${innerKey}`] || other === user.color || taxis > user.taxis) return;
+      if (paths[`${outerKey}-${innerKey}`] || other === user.color || numberOfTaxis > user.taxis) return;
 
 
       // Check you have selected the cards for it\
@@ -60,37 +64,68 @@ export default function Game({ reload, load }) {
       //Discard cards used
       let discard = logic.discard ? [...logic.discard] : [];
       let newHandFilter = []
+      let txi = numberOfTaxis;
       selectedCards.forEach(ind => {
-        if (numberOfTaxis > 0) {
+        if (txi > 0) {
           discard.push(hand[ind]);
           newHandFilter.push(ind);
-          numberOfTaxis--;
+          txi--;
         }
       })
-      console.log(newHandFilter, hand);
       hand = hand.filter((x, i) => !newHandFilter.includes(i))
 
       // Check if your destination cards are good
       let dCards = [];
+      let dCardPoints = 0;
       user.dCards.forEach(d => {
         if (d.connected) return dCards.push(d);
         let connected = (checkConnected(d.start, d.end, routes) || checkConnected(d.end, d.start, routes));
+        // Get points if connected
+        if (connected) {
+          dCardPoints = d.points;
+        }
         dCards.push({
           ...d,
           connected: connected
         })
       })
 
-      // Get points and change turn
-      let points = convertPoints(taxis);
+      // Get points for tokens;
+
+      let tokenList = defaultTokens.filter(t => t.points).map(t => t.name);
+
+      let myPlaces = [];
+      user.routes.forEach(r => {
+        let split = r.split('-');
+        myPlaces.push(split[0]);
+        myPlaces.push(split[1]);
+      })
+      console.log(path.nodes[0]);
+      console.log(path.nodes[1]);
+      if (tokenList.filter(t => !myPlaces.includes(t)).includes(path.nodes[0])) {
+        dCardPoints++;
+      }
+      if (tokenList.filter(t => !myPlaces.includes(t)).includes(path.nodes[1])) {
+        dCardPoints++;
+      }
+
+      // Get points, taxis and change turn, finish if last turn
+      let points = convertPoints(numberOfTaxis);
+      points += user.points + dCardPoints;
+
+      let taxis = user.taxis - numberOfTaxis;
+      console.log(user.taxis, numberOfTaxis, taxis)
+
       let turn = logic.turn;
       turn++;
       turn = turn % logic.order.length;
 
+      let lastTurn = logic.lastTurn ? logic.lastTurn : taxis < 3;
+
       // Send to DB
       await Promise.all([
-        db.collection(id).doc(user.id).update({ routes, taxis: user.taxis - taxis, points: user.points + points, dCards, hand }),
-        db.collection(id).doc('logic').update({ paths, turn, discard })
+        db.collection(id).doc(user.id).update({ routes, taxis, points, dCards, hand, done: logic.lastTurn }),
+        db.collection(id).doc('logic').update({ paths, turn, discard, lastTurn, lastModified: Date.now() })
       ])
 
       //Reset locally
@@ -106,6 +141,7 @@ export default function Game({ reload, load }) {
   //==================================================================================================================
 
   const dealStarterCards = async () => {
+    if (users.some(user => !user.ready)) return;
     let deck = [...logic.deck];
 
     //bring all users into one array
@@ -117,9 +153,18 @@ export default function Game({ reload, load }) {
     }
 
     // Deal the 5 starter face up cards
-    let showing = []
-    for (let i = 0; i < 5; i++) {
-      deal(showing)
+    let showing = logic.showing || [];
+    let interval = setInterval(dealToShowing, 500);
+    let cardsDealt = 0
+
+    async function dealToShowing() {
+      cardsDealt++;
+      if (cardsDealt > 5) {
+        clearInterval(interval);
+        return;
+      }
+      deal(showing);
+      await db.collection(id).doc('logic').update({ showing });
     }
 
     function deal(where) {
@@ -130,12 +175,21 @@ export default function Game({ reload, load }) {
 
     //save it to db
     await Promise.all(usersArr.map(u => db.collection(id).doc(u.id).update({ hand: u.hand })));
-    await db.collection(id).doc('logic').update({ deck, showing, waiting: false })
+    await db.collection(id).doc('logic').update({ deck, waiting: false })
   }
 
   const handleTakeFromDeck = async () => {
-    if (!myTurn) return;
     let deck = [...logic.deck];
+    let discard = [...logic.discard];
+    if (deck.length < 1 && discard.length < 1) {
+      alert('Out of Cards!')
+      return;
+    }
+    if (!myTurn) return;
+    if (deck.length < 1) {
+      deck = discard;
+      discard = [];
+    }
     let hand = user.hand ? [...user.hand] : [];
     let ind = Math.floor(Math.random() * deck.length);
     hand.push(deck[ind]);
@@ -147,13 +201,20 @@ export default function Game({ reload, load }) {
 
     // Change turn if necessary
     let turn = logic.turn;
+    let turnOver = false;
+
     if (moves > 1) {
       turn++;
       turn = turn % logic.order.length;
       moves = 0;
-      setMyTurn(false);
+      turnOver = true;
     }
-    await Promise.all([db.collection(id).doc('logic').update({ deck, moves, turn }), db.collection(id).doc(user.id).update({ hand })]);
+    await Promise.all([
+      db.collection(id).doc(user.id).update({ hand }),
+      db.collection(id).doc('logic').update({ deck, discard, moves, turn })
+    ]);
+
+    if (turnOver) setMyTurn(false);
   }
 
   const handleTakeCard = async index => {
@@ -166,11 +227,54 @@ export default function Game({ reload, load }) {
     if (wild && moves > 0) return
 
     let deck = [...logic.deck];
+    let discard = [...logic.discard]; // Check there are cards in the deck, if not replace with the discarded cards
+    if (deck.length < 1) {
+      deck = discard;
+      discard = [];
+    }
     let hand = [...user.hand];
     hand.push(showing[index]);
     let ind = Math.floor(Math.random() * deck.length);
-    showing.splice(index, 1, deck[ind]);
-    deck.splice(ind, 1);
+    if (deck.length > 0) {
+      showing.splice(index, 1, deck[ind]);
+      deck.splice(ind, 1);
+    } else {
+      showing.splice(index, 1)
+    }
+
+    // Check how many wild cards are showing
+
+    if (showing.filter(c => c === 'wild').length > 2 && [...deck, ...discard].length > 4) {
+
+      discard = [...discard, ...showing];
+      showing = [];
+      await db.collection(id).doc('logic').update({ showing });
+
+      let interval = setInterval(dealToShowing, 500);
+      let cardsDealt = 0
+
+      async function dealToShowing() {
+        cardsDealt++;
+        if (cardsDealt > 5) {
+          clearInterval(interval);
+          return;
+        }
+        deal(showing);
+        await db.collection(id).doc('logic').update({ showing });
+      }
+    }
+
+    function deal(where) {
+      if (deck.length < 1) {
+        deck = discard;
+        discard = [];
+      }
+      if (deck.length > 0) {
+        let ind = Math.floor(Math.random() * deck.length);
+        where.push(deck[ind]);
+        deck.splice(ind, 1);
+      }
+    }
 
     // Check and add move
     if (wild) {
@@ -181,15 +285,20 @@ export default function Game({ reload, load }) {
 
     // Change turn if necessary
     let turn = logic.turn;
+    let turnOver = false;
     if (moves > 1) {
-      console.log('here')
       turn++;
       turn = turn % logic.order.length;
       moves = 0;
-      setMyTurn(false);
+      turnOver = true;
     }
 
-    await Promise.all([db.collection(id).doc('logic').update({ deck, showing, moves, turn }), db.collection(id).doc(user.id).update({ hand })]);
+    await Promise.all([
+      db.collection(id).doc(user.id).update({ hand }),
+      db.collection(id).doc('logic').update({ deck, discard, showing, moves, turn })
+    ]);
+
+    if (turnOver) setMyTurn(false);
   }
 
   const handleSelectCard = index => {
@@ -234,15 +343,58 @@ export default function Game({ reload, load }) {
   }
 
   const discardDCard = async ind => {
-    let dCards = user.dCards;
+    let dCards = [user.dCards];
     dCards.splice(ind, 1);
     await db.collection(id).doc(user.id).update({ dCards });
+  }
+
+  const keepNewDCard = async ind => {
+    let possible = [...possibleDCards];
+    let dCards = [...user.dCards];
+
+    dCards.push(possible[ind]);
+    possible.splice(ind, 1);
+    setPossibleDCards(possible);
+    await db.collection(id).doc(user.id).update({ dCards });
+  }
+
+  const discardNewDCard = async ind => {
+    let dCards = [...possibleDCards];
+    dCards.splice(ind, 1);
+    setPossibleDCards(dCards);
   }
 
   const handleAddCards = async () => {
     if (!myTurn) return;
     db.collection(id).doc('logic').update({ deck: startingDeck })
   }
+
+  const getMoreDCards = async () => {
+    let allDCards = [...logic.destinations];
+    let newDCards = [];
+    getDCard();
+    getDCard();
+
+    function getDCard() {
+      let options = allDCards.filter(x => !x.taken);
+      if (options.length < 1) return;
+      let ind = Math.floor(Math.random() * options.length)
+      newDCards.push(options[ind]);
+      allDCards.find(x => (x.start === options[ind].start && x.end === options[ind].end)).taken = true;
+    }
+    setPossibleDCards(newDCards);
+    await db.collection(id).doc('logic').update({ destinations: allDCards })
+  }
+
+  //=====================================================================================================================================
+  //  GAME STATES
+  //=====================================================================================================================================
+
+  const getReady = async () => {
+    await db.collection(id).doc(user.id).update({ ready: true });
+  }
+
+  //=====================================================================================================================================
 
   //=====================================================================================================================================
 
@@ -277,9 +429,9 @@ export default function Game({ reload, load }) {
   }, [load, id, history])
 
   return (
-    <>
+    <main className="main-game">
       <h1>Ticket to Ride - New York</h1>
-      <div className="App">
+      <div className="game">
         <Board
           logic={logic}
           handleClaimLine={handleClaimLine}
@@ -300,9 +452,15 @@ export default function Game({ reload, load }) {
           handleAddCards={handleAddCards}
           handleDiscard={handleDiscard}
           discardDCard={discardDCard}
+          getReady={getReady}
+          getMoreDCards={getMoreDCards}
+          possibleDCards={possibleDCards}
+          keepNewDCard={keepNewDCard}
+          discardNewDCard={discardNewDCard}
         />
       </div>
-    </>
+      {user.done && users.every(u => u.done) && <EndGame users={[...users, user]} />}
+    </main>
   )
 }
 

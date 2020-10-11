@@ -119,6 +119,7 @@
     color: #333;
     display: block;
     font-size: .9em;
+    z-index: 1;
 }
 
 .glowing p {
@@ -161,7 +162,7 @@
 p.p-6 {
     left: 120%;
     top: -15%;
-    width: 6vw;
+    width: 8vw;
     font-size: .7em;
     transform: rotate(-10deg);
     margin: 0;

@@ -1,0 +1,266 @@
+.main-lobby {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-lobby .writing {
+    margin: 20px;
+    height: 20vh;
+}
+
+.main-lobby p {
+    margin: 20px;
+}
+
+.link {
+    padding: 10px 20px;
+    background-color: rgb(233, 233, 162);
+    font-weight: 900;
+    color: rgb(92, 142, 189);
+    text-decoration: underline;
+    cursor: copy;
+    position: relative;
+}
+
+.copied {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100px;
+    animation: fadeout 1s ease forwards;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #333;
+}
+
+.main-lobby .user-list {
+    width: 95%;
+    max-width: 800px;
+    background-color: white;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.main-lobby ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #333;
+    padding: 10px;
+}
+
+.main-lobby li {
+    width: 95%;
+    margin: 5px;
+    border-bottom: 1px solid burlywood;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: sans-serif;
+    font-weight: bold;
+}
+
+.main-lobby li span {
+    flex: 1;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.main-lobby .blank-li {
+    color: #777;
+}
+
+.main-lobby li button:hover {
+    cursor: pointer;
+    background-color: rgb(236, 122, 122);
+}
+
+.main-lobby li span.lobby-you {
+    font-weight: 500;
+    color: #777;
+    text-align: right;
+}
+
+.main-lobby li button {
+    width: 24px;
+    height: 24px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 3px;
+    background-color: rgb(228, 40, 40);
+    transform: translateY(-5px);
+
+    transition: all 400ms ease;
+}
+
+.main-lobby .x {
+    position: absolute;
+    top: 9px;
+    left: 2px;
+    width: 20px;
+    height: 5px;
+    transform: rotate(45deg);
+    border-radius: 10px;
+    background-color: white;
+}
+.main-lobby .x:last-child {
+    transform: rotate(-45deg);
+
+}
+
+.main-lobby .start-game-btn:hover {
+    background-color: white;
+    color: burlywood;
+    cursor: pointer;
+} 
+
+.main-lobby .start-game-btn {
+    margin: 10px;
+    border: 2px solid burlywood;
+    border-radius: 3px;
+    padding: 10px;
+    background-color: burlywood;
+    color: white;
+    font-size: 1.4em;
+    font-weight: bold;
+    position: relative;
+
+    transition: all 400ms ease;
+}
+
+.main-lobby .form-wrapper {
+    background-color: white;
+    border-radius: 4px;
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+.main-lobby form {
+    width: 100%;
+    padding-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    flex-wrap: wrap;
+}
+
+.main-lobby form div {
+    flex: 1 350px;
+    height: 50px;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.main-lobby input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    color: #777;
+    font-size: 1.3em;
+    padding: 20px 10px 10px 10px;
+    outline: none;
+}
+
+.main-lobby input:focus + label span,
+.main-lobby label.filled span {
+    top: -10px;
+    color: #333;
+    font-weight: bold;
+}
+
+.main-lobby input:focus + label::after,
+.main-lobby label.filled::after {
+    left: 0;
+}
+
+.main-lobby label {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-bottom: 2px solid #333;
+    cursor: text;
+}
+
+.main-lobby label::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 4px;
+    left: -100%;
+    pointer-events: none;
+    border-bottom: 4px solid burlywood;
+
+    transition: all 600ms ease;
+}
+
+.main-lobby label span {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 1.3em;
+    color: #777;
+
+    transition: all 600ms ease;
+}
+
+.main-lobby select {
+    flex: 1 20%;
+    height: 40px;
+    max-width: 150px;
+    padding: 0 20px;
+    margin: 10px;
+    font-size: 1.3em;
+    text-align: center;
+    text-transform: capitalize;
+} 
+
+.main-lobby form button:hover,
+.main-lobby form button:active,
+.main-lobby form button:focus,
+.main-lobby form button:visited {
+    background-color: white;
+    color: burlywood;
+    cursor: pointer;
+}   
+
+.main-lobby form button {
+    flex: 1 30%;
+    height: 40px;
+    max-width: 200px;
+    font-weight: bold;
+    font-size: 1.3em;
+    border: 2px solid burlywood;
+    background-color: burlywood;
+    color: white;
+    border-radius: 4px;;
+
+    transition: all 400ms ease;
+} 
+
+/* ================================================================================================================
+            ANIMATIONS
+================================================================================================================ */
+
+
+@keyframes fadeout {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+        display: block;
+    }
+    100% {
+        opacity: 0;
+        display: none;
+    }
+}

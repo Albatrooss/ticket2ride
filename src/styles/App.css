@@ -1,14 +1,21 @@
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+body {
+  width: 100%;
+  background-color: #f2f2f2;
+}
+
 #root {
   width: 100%;
+  min-height: 100vh;
   text-align: center;
 }
 
-.App {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
 /*================================================================
               BOARD
 ================================================================*/
@@ -58,8 +65,24 @@
   background-color: #D22222;
 }
 
+.taxi.red {
+  background-color: #b81919;
+}
+
+.color-red {
+  color: #b81919;
+}
+
 .green {
   background-color: #80DE2D;
+}
+
+.taxi.green {
+  background-color: #559b19;
+}
+
+.color-green {
+  color: #559b19;
 }
 
 .black {
@@ -68,6 +91,14 @@
 
 .blue {
   background-color: #33A3DA;
+}
+
+.taxi.blue {
+  background-color: #1d7baa;
+}
+
+.color-blue {
+  color: #1d7baa;
 }
 
 .orange {
@@ -82,6 +113,14 @@
 
 .wild {
   background-color: thistle;
+}
+
+.yellow {
+  background-color: rgb(230, 217, 43);
+}
+
+.color-yellow {
+  color: rgb(230, 217, 43);
 }
 
 .deck {

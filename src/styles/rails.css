@@ -5,6 +5,7 @@
 .rail {
     position: absolute;
     top: 100%;
+    z-index: 10;
 }
 
 /* width: calc(min(100vw, 60vh) / 12);

@@ -14,7 +14,7 @@ function Line({ data, outerKey, innerKey, handleClaimLine, color, other }) {
   }
 
   return (
-    <div className="line" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={() => handleClaimLine(outerKey, innerKey, data.num, other.taken)}>
+    <div className="line" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={() => handleClaimLine(outerKey, innerKey, other.taken)}>
       {squares()}
     </div>
   )

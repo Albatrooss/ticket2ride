@@ -3,8 +3,27 @@ import '../styles/UI.css';
 
 import CardsArea from './CardsArea';
 import Hand from './Hand';
+import OthersUI from './OthersUi';
 
-export default function UI({ waiting, turn, user, users, selectedCards, logic, dealStarterCards, handleTakeFromDeck, handleTakeCard, handleAddCards, handleSelectCard, discardDCard }) {
+export default function UI({
+  waiting,
+  turn,
+  user,
+  users,
+  selectedCards,
+  logic,
+  dealStarterCards,
+  handleTakeFromDeck,
+  handleTakeCard,
+  handleSelectCard,
+  discardDCard,
+  getReady,
+  getMoreDCards,
+  possibleDCards,
+  keepNewDCard,
+  discardNewDCard
+}) {
+
   return (
     <div className="ui">
       {waiting ? (user.host ?
@@ -21,8 +40,10 @@ export default function UI({ waiting, turn, user, users, selectedCards, logic, d
 
       {/* User area */}
 
-      <h2>{user.id}</h2>
-      {turn && !waiting ? <h3>YOUR TURN!</h3> : ''}
+      <h2>{user.id}
+        {turn && !waiting && !user.done ? ' - Your Turn!' : ''}
+        {logic.lastTurn && !user.done ? ' - Final Round!' : ''}
+        {user.done ? ' - Game Over' : ''}</h2>
 
       {user.hand &&
         <Hand
@@ -31,23 +52,44 @@ export default function UI({ waiting, turn, user, users, selectedCards, logic, d
           handleSelectCard={handleSelectCard}
         />}
 
-      {waiting && <h3>Pick your Destination Cards</h3>}
       {/* Destination cards*/}
 
-      < ul className="ui-d-list" >
-        {user.dCards && user.dCards.map((d, i) => <li key={`${d.start}${i}`}>
+      <ul className="ui-d-list">
+        {user.dCards && user.dCards.map((d, i) => <li key={`${d.start}-${d.end}`}>
           <div className={`${d.connected ? 'connected' : ''}`}>
             {d.start}
-            <br />-to-<br />
-            {d.end}
+            <br /><span>-to-</span><br />
+            {d.end}<br />
+            <span className="points">{d.points} points</span>
           </div>
           {waiting && user.dCards.length > 1 && <button onClick={() => discardDCard(i)}>Discard</button>}</li>)}
+        {waiting && !user.ready && <li><button onClick={getReady}>Ready!</button></li>}
+        {possibleDCards && possibleDCards.map((p, i) => <li key={`${p.start}-${p.end}`} className='possible-d'>
+          <div>
+            {p.start}
+            <br />-to-<br />
+            {p.end}
+          </div>
+          <div>
+            <button onClick={() => keepNewDCard(i)}>Keep</button>
+            <button onClick={() => discardNewDCard(i)}>Discard</button>
+          </div>
+        </li>)}
+        <li className="dCard-more"><button onClick={getMoreDCards}>Get <br />More</button></li>
       </ul>
-      <div>
-        <img className="taxi-icon" src="/images/Taxi_Icon.png" alt="taxis" />
-        <p>{user.taxis}</p>
+
+
+      <div className='points-taxis'>
+        <div>
+          <img className="taxi-icon" src="/images/Taxi_Icon.png" alt="taxis" />
+          <p>{user.taxis}</p>
+        </div>
+        <div>
+          Points:
+          {user.points}
+        </div>
       </div>
-      <button onClick={handleAddCards}>ADD CArDS</button>
+      <OthersUI users={users} />
     </div>
   )
 }

@@ -1,0 +1,139 @@
+.main-home {
+    /* background-color: red; */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-home h1 {
+    margin: 20px;
+}
+
+.main-home p {
+    width: 100%;
+    padding: 20px;
+}
+
+.main-home .form-wrapper {
+    width: 95%;
+    max-width: 800px;
+    background-color: white;
+    padding: clamp(10px, 3%, 20px);
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+.main-home form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+}
+
+.main-home form .input {
+    position: relative;
+    margin: 10px 0;
+}
+
+.main-home form input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    padding: 20px 10px 10px 10px;
+    font-size: 1.3em;
+    color: #555;
+}
+
+.main-home form input:focus {
+    outline: none;
+}
+
+.main-home form input:focus + label span,
+.main-home form label.filled span  { 
+    top: -15px;
+    color: #333;
+}
+
+.main-home form input:focus + label::after,
+.main-home form label.filled::after {
+    left: 0;
+}
+
+.main-home form label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    border-bottom: 2px solid #333;
+}
+
+.main-home form label span {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    color: #777;
+    font-size: 1.6em;
+
+    transition: all 700ms ease;
+}
+
+.main-home form label::after {
+    content: '';
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    left: -100%;
+    bottom: -4px;
+    border-bottom: 4px solid burlywood;
+
+    transition: all 700ms ease;
+}
+
+.main-home form .select-button {
+    display: flex;
+    flex-direction: column;
+}
+
+.main-home select {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 1.3em;
+    cursor: pointer
+}
+
+.main-home button {
+    width: 100%;
+    height: 45px;
+    border: none;
+    background-color: burlywood;
+    color: white;
+    font-size: 1.4em;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+@media only screen and (min-width: 687px) {
+    .main-home p {
+        width: 60%;
+    }
+
+    .main-home form .select-button {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 30px;
+    }
+
+    .main-home select {
+        width: 48%
+    }
+
+    .main-home button {
+        width: 48%
+    }
+}
