@@ -1,12 +1,19 @@
 import React from 'react'
+import '../styles/endgame.css'
 
-export default function EndGame({ users }) {
+export default function EndGame({ users, newGame }) {
 
   let sorted = users.sort((a, b) => b.points - a.points)
   return (
-    <ul>
-      {sorted.map((u, i) => <li key={u.id}>{place(i)}{u.id} - {u.points} points</li>)}
-    </ul>
+    <div className="end-game">
+      <div>
+        <h2>Game Over!</h2>
+        <ul>
+          {sorted.map((u, i) => <li key={u.id}>{place(i)}{u.id} <span> </span> {u.points} points</li>)}
+        </ul>
+        <button onClick={newGame}>Play Again?</button>
+      </div>
+    </div>
   )
 }
 

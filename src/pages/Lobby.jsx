@@ -89,7 +89,7 @@ export default function Lobby() {
     }
 
 
-    db.collection(id).doc('logic').update({ destinations: dests, gameOn: true });
+    await db.collection(id).doc('logic').update({ destinations: dests, gameOn: true });
     console.log(logic, users);
   }
 
@@ -129,8 +129,8 @@ export default function Lobby() {
         id: doc.id,
         ...doc.data()
       }))
-      if (userList.findIndex(x => x.gameOn) >= 0) {
-        if (userToken) {
+      if (userList.find(x => x.gameOn)) {
+        if (tokenService.getUserFromToken()) {
           history.push(`/${id}/game`);
         } else {
           localStorage.setItem('message', 'Game in progress..')

@@ -1,5 +1,5 @@
 .ui {
-    background-color: darkgreen;
+    background-color: burlywood;
 }
 
 .cards-area {
@@ -16,6 +16,10 @@
     height: 20%;
     /* background-color: yellow; */
 }
+
+/* ==============================================================================================================
+        DESTINATION CARDS
+ ============================================================================================================== */
 
 .ui-d-list {
     list-style: none;
@@ -36,11 +40,11 @@
 }
 
 .ui-d-list li div:first-child {
-    width: 80%;
+    width: 90%;
     height: 80%;
 
-    font-size: .8em;
     margin: 0 auto;
+    padding: 5px 3px;
 
     display: flex;
     flex-direction: column;
@@ -49,35 +53,30 @@
 
     border: 2px solid #ddd;
     background-color: rgb(106, 165, 233);
-    color: rgb(29, 73, 16);
-    font-weight: bolder;
     border-radius: 5px;
+}
+
+.ui-d-list div:first-child p {
+    width: 100%;
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+    font-size: 0.9em;
+    color: #222;
+    font-weight: bolder;
 }
 
 .ui-d-list li div:first-child span {
-    display: flex;
-    align-items: center;
+    text-align: center;
+    margin: auto;
 }
 
 .ui-d-list li div:first-child span.points {
-    margin-top: auto
-}
-
-.ui-d-list li.dCard-more {
-    margin-left: auto;
-}
-
-.ui-d-list li.dCard-more button {
-    width: 80%;
-    height: 80%;
-    margin-left: auto;
-
-    border: 2px solid #ddd;
-    border-radius: 5px;
-    background-color: rgb(200, 221, 245);
-    color: rgb(29, 73, 16);   
-    font-weight: bolder;
-    cursor: pointer;
+    margin-top: auto;
+    font-size: 2em;
+    color: white;
 }
 
 .ui-d-list .possible-d {
@@ -88,15 +87,48 @@
     width: 45%;
 }
 
+.points-taxis {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 10%;
+}
+
+.dCard-more {
+    width: 30%;
+    height: 100%;
+}
+
+.dCard-more button {
+    width: 100%;
+    height: 100%;
+    margin-left: auto;
+
+    border: 2px solid white;
+    border-radius: 5px;
+    background-color: rgb(200, 221, 245);
+    color: #222;  
+    font-size: 1.2em;
+    font-weight: bolder;
+    cursor: pointer;
+
+}
+
 .taxi-icon {
     width: 50px;
     border-radius: 5px;
 }
 
-.points-taxis {
+.my-points {
     display: flex;
-    justify-content: space-evenly;
+    flex-direction: column;
 }
+
+.my-points span {
+    font-size: 2em;
+    font-weight: bolder;
+}
+
 
 /* ==================================================================================================
     OTHER UI

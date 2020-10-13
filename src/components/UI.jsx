@@ -31,6 +31,7 @@ export default function UI({
           <button onClick={dealStarterCards}>DEAL</button>
         </div> : '') :
         <CardsArea
+          deck={logic.deck}
           waiting={logic.waiting}
           cardsShowing={logic.showing}
           dealStarterCards={dealStarterCards}
@@ -42,8 +43,7 @@ export default function UI({
 
       <h2>{user.id}
         {turn && !waiting && !user.done ? ' - Your Turn!' : ''}
-        {logic.lastTurn && !user.done ? ' - Final Round!' : ''}
-        {user.done ? ' - Game Over' : ''}</h2>
+        {logic.lastTurn && !user.done ? ' - Final Round!' : ''}</h2>
 
       {user.hand &&
         <Hand
@@ -57,36 +57,32 @@ export default function UI({
       <ul className="ui-d-list">
         {user.dCards && user.dCards.map((d, i) => <li key={`${d.start}-${d.end}`}>
           <div className={`${d.connected ? 'connected' : ''}`}>
-            {d.start}
-            <br /><span>-to-</span><br />
-            {d.end}<br />
-            <span className="points">{d.points} points</span>
+            <p>{d.start}<span>-to-</span>{d.end}</p>
+            <span className="points">{d.points}</span>
           </div>
-          {waiting && user.dCards.length > 1 && <button onClick={() => discardDCard(i)}>Discard</button>}</li>)}
+          {waiting && !user.ready && user.dCards.length > 1 && <button onClick={() => discardDCard(i)}>Discard</button>}</li>)}
         {waiting && !user.ready && <li><button onClick={getReady}>Ready!</button></li>}
         {possibleDCards && possibleDCards.map((p, i) => <li key={`${p.start}-${p.end}`} className='possible-d'>
           <div>
-            {p.start}
-            <br />-to-<br />
-            {p.end}
+            <p>{p.start}<span>-to-</span>{p.end}</p>
           </div>
           <div>
             <button onClick={() => keepNewDCard(i)}>Keep</button>
             <button onClick={() => discardNewDCard(i)}>Discard</button>
           </div>
         </li>)}
-        <li className="dCard-more"><button onClick={getMoreDCards}>Get <br />More</button></li>
       </ul>
 
 
       <div className='points-taxis'>
+        <div className="dCard-more"><button onClick={getMoreDCards}>More<br />Destintation Cards</button></div>
         <div>
           <img className="taxi-icon" src="/images/Taxi_Icon.png" alt="taxis" />
           <p>{user.taxis}</p>
         </div>
-        <div>
+        <div className="my-points">
           Points:
-          {user.points}
+          <span>{user.points}</span>
         </div>
       </div>
       <OthersUI users={users} />

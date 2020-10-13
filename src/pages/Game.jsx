@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useParams, useHistory } from 'react-router-dom';
 import '../styles/game.css';
 
@@ -21,7 +21,7 @@ export default function Game({ reload, load }) {
 
   const { id } = useParams();
 
-  const [logic, setLogic] = useState({ paths: [] });
+  const [logic, setLogic] = useState({ paths: [], deck: [] });
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState({ cards: [], dCards: [] })
   const [myTurn, setMyTurn] = useState(false);
@@ -29,6 +29,7 @@ export default function Game({ reload, load }) {
   const [possibleDCards, setPossibleDCards] = useState([]);
 
   const history = useHistory();
+  const soundRefs = [useRef(null), useRef(null), useRef(null)];
 
   const destinations = [];
   user.dCards.forEach(d => {
@@ -100,8 +101,7 @@ export default function Game({ reload, load }) {
         myPlaces.push(split[0]);
         myPlaces.push(split[1]);
       })
-      console.log(path.nodes[0]);
-      console.log(path.nodes[1]);
+
       if (tokenList.filter(t => !myPlaces.includes(t)).includes(path.nodes[0])) {
         dCardPoints++;
       }
@@ -114,11 +114,14 @@ export default function Game({ reload, load }) {
       points += user.points + dCardPoints;
 
       let taxis = user.taxis - numberOfTaxis;
-      console.log(user.taxis, numberOfTaxis, taxis)
 
       let turn = logic.turn;
       turn++;
       turn = turn % logic.order.length;
+
+      soundRefs[2].current.volume = 0.2;
+      soundRefs[2].current.play();
+      soundRefs[1].current.play();
 
       let lastTurn = logic.lastTurn ? logic.lastTurn : taxis < 3;
 
@@ -156,6 +159,7 @@ export default function Game({ reload, load }) {
     let showing = logic.showing || [];
     let interval = setInterval(dealToShowing, 500);
     let cardsDealt = 0
+    let soundRef = 0;
 
     async function dealToShowing() {
       cardsDealt++;
@@ -164,6 +168,8 @@ export default function Game({ reload, load }) {
         return;
       }
       deal(showing);
+      soundRefs[soundRef].current.play();
+      soundRef = soundRef ? 0 : 1;
       await db.collection(id).doc('logic').update({ showing });
     }
 
@@ -195,6 +201,7 @@ export default function Game({ reload, load }) {
     hand.push(deck[ind]);
     deck.splice(ind, 1);
 
+    soundRefs[0].current.play();
     // Check and add moves
     let moves = logic.moves;
     moves++;
@@ -234,6 +241,7 @@ export default function Game({ reload, load }) {
     }
     let hand = [...user.hand];
     hand.push(showing[index]);
+    soundRefs[0].current.play();
     let ind = Math.floor(Math.random() * deck.length);
     if (deck.length > 0) {
       showing.splice(index, 1, deck[ind]);
@@ -252,14 +260,18 @@ export default function Game({ reload, load }) {
 
       let interval = setInterval(dealToShowing, 500);
       let cardsDealt = 0
+      let soundRef = 0;
 
       async function dealToShowing() {
+        console.log(soundRef)
         cardsDealt++;
         if (cardsDealt > 5) {
           clearInterval(interval);
           return;
         }
         deal(showing);
+        soundRefs[soundRef].current.play();
+        soundRef = soundRef ? 0 : 1
         await db.collection(id).doc('logic').update({ showing });
       }
     }
@@ -356,12 +368,39 @@ export default function Game({ reload, load }) {
     possible.splice(ind, 1);
     setPossibleDCards(possible);
     await db.collection(id).doc(user.id).update({ dCards });
+
+    // Change turn if necessary
+    let turn = logic.turn;
+    let turnOver = false;
+    console.log(possibleDCards);
+    if (possibleDCards.length <= 1) {
+      turn++;
+      turn = turn % logic.order.length;
+      turnOver = true;
+      await db.collection(id).doc('logic').update({ turn, })
+
+      setMyTurn(false);
+    }
   }
 
   const discardNewDCard = async ind => {
     let dCards = [...possibleDCards];
     dCards.splice(ind, 1);
     setPossibleDCards(dCards);
+
+    soundRefs[0].current.play();
+    // Change turn if necessary\
+
+    let turn = logic.turn;
+    let turnOver = false;
+    if (possibleDCards.length <= 1) {
+      turn++;
+      turn = turn % logic.order.length;
+      turnOver = true;
+      await db.collection(id).doc('logic').update({ turn, })
+
+      setMyTurn(false);
+    }
   }
 
   const handleAddCards = async () => {
@@ -370,19 +409,23 @@ export default function Game({ reload, load }) {
   }
 
   const getMoreDCards = async () => {
+    if (logic.moves > 0 || possibleDCards.length > 0) return;
     let allDCards = [...logic.destinations];
     let newDCards = [];
+    let soundRef = 0;
     getDCard();
-    getDCard();
+    await setTimeout(getDCard, 500);
 
     function getDCard() {
       let options = allDCards.filter(x => !x.taken);
       if (options.length < 1) return;
       let ind = Math.floor(Math.random() * options.length)
+      soundRefs[soundRef].current.play();
+      soundRef = soundRef ? 0 : 1
       newDCards.push(options[ind]);
       allDCards.find(x => (x.start === options[ind].start && x.end === options[ind].end)).taken = true;
     }
-    setPossibleDCards(newDCards);
+    await setTimeout(() => setPossibleDCards(newDCards), 600);
     await db.collection(id).doc('logic').update({ destinations: allDCards })
   }
 
@@ -392,6 +435,13 @@ export default function Game({ reload, load }) {
 
   const getReady = async () => {
     await db.collection(id).doc(user.id).update({ ready: true });
+  }
+
+  const newGame = async () => {
+    await db.collection(id).doc('logic').delete();
+    await db.collection(id).doc(user.id).delete();
+    users.forEach(async u => await db.collection(id).doc(u.id).delete());
+    history.push('/');
   }
 
   //=====================================================================================================================================
@@ -459,7 +509,10 @@ export default function Game({ reload, load }) {
           discardNewDCard={discardNewDCard}
         />
       </div>
-      {user.done && users.every(u => u.done) && <EndGame users={[...users, user]} />}
+      {user.done && users.every(u => u.done) && <EndGame newGame={newGame} users={[...users, user]} />}
+      <audio src="/sounds/deal01.wav" ref={soundRefs[0]}></audio>
+      <audio src="/sounds/deal01.wav" ref={soundRefs[1]}></audio>
+      <audio src="/sounds/honk01.wav" ref={soundRefs[2]}></audio>
     </main>
   )
 }
