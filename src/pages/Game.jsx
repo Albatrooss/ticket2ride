@@ -103,11 +103,15 @@ export default function Game({ reload, load }) {
         myPlaces.push(split[1]);
       })
 
+      let myTokens = user.tokens ? [...user.tokens] : [];
+
       if (tokenList.filter(t => !myPlaces.includes(t)).includes(path.nodes[0])) {
         dCardPoints++;
+        myTokens.push(path.nodes[0]);
       }
       if (tokenList.filter(t => !myPlaces.includes(t)).includes(path.nodes[1])) {
         dCardPoints++;
+        myTokens.push(path.nodes[1]);
       }
 
       // Get points, taxis and change turn, finish if last turn
@@ -127,7 +131,7 @@ export default function Game({ reload, load }) {
       let lastTurn = logic.lastTurn ? logic.lastTurn : taxis < 3;
 
       // Send to DB
-      await updateDB({ paths, turn, discard, lastTurn, lastModified: Date.now() }, { routes, taxis, points, dCards, hand, done: logic.lastTurn })
+      await updateDB({ paths, turn, discard, lastTurn, lastModified: Date.now() }, { routes, taxis, points, tokens: myTokens, dCards, hand, done: logic.lastTurn })
 
       //Reset locally
       setSelectedCards([]);
@@ -269,7 +273,7 @@ export default function Game({ reload, load }) {
         deal(showing, deck);
         soundRefs[soundRef].current.play();
         soundRef = soundRef ? 0 : 1
-        await db.collection(id).doc('logic').update({ showing });
+        await updateDB({ showing }, null);
       }
     }
 
@@ -297,8 +301,10 @@ export default function Game({ reload, load }) {
 
   const handleSelectCard = index => {
     let prev = [...selectedCards];
+
     // Can only use one Wild Card
     if (prev.some(x => user.hand[x] === 'wild') && user.hand[index] === 'wild') return;
+
     // If empty or wild push 
     if (prev.length < 1 || user.hand[index] === 'wild') {
       prev.push(index);
@@ -327,39 +333,41 @@ export default function Game({ reload, load }) {
     setSelectedCards(prev)
   }
 
-  const handleDiscard = async ind => {
-    if (!myTurn) return;
-    let discard = logic.discard ? [...logic.discard] : [];
-    let hand = [...user.hand];
-    discard.push(hand[ind]);
-    hand.splice(ind, 1);
-    await Promise.all([db.collection(id).doc('logic').update({ discard }), db.collection(id).doc(user.id).update({ hand })]);
-  }
+  // const handleDiscard = async ind => {
+  //   if (!myTurn) return;
+  //   let discard = logic.discard ? [...logic.discard] : [];
+  //   let hand = [...user.hand];
+  //   discard.push(hand[ind]);
+  //   hand.splice(ind, 1);
+  //   await Promise.all([db.collection(id).doc('logic').update({ discard }), db.collection(id).doc(user.id).update({ hand })]);
+  // }
 
   const discardDCard = async ind => {
     let dCards = [user.dCards];
     dCards.splice(ind, 1);
-    await db.collection(id).doc(user.id).update({ dCards });
+    await updateDB(null, { dCards });
   }
 
   const keepNewDCard = async ind => {
     let possible = [...possibleDCards];
     let dCards = [...user.dCards];
+    let turn = logic.turn;
 
     dCards.push(possible[ind]);
     possible.splice(ind, 1);
     setPossibleDCards(possible);
-    await db.collection(id).doc(user.id).update({ dCards });
+
 
     // Change turn if necessary
-    let turn = logic.turn;
-    if (possibleDCards.length <= 1) {
+    console.log(possible.length)
+    let myTurn = true;
+    if (possible.length < 1) {
       turn++;
       turn = turn % logic.order.length;
-      await db.collection(id).doc('logic').update({ turn, })
-
-      setMyTurn(false);
+      myTurn = false;
     }
+    await updateDB({ turn }, { dCards });
+    setMyTurn(myTurn);
   }
 
   const discardNewDCard = async ind => {
@@ -390,20 +398,28 @@ export default function Game({ reload, load }) {
     let allDCards = [...logic.destinations];
     let newDCards = [];
     let soundRef = 0;
+    console.log('start');
     getDCard();
     await setTimeout(getDCard, 500);
 
     function getDCard() {
       let options = allDCards.filter(x => !x.taken);
+      console.log(options.length, allDCards.length);
       if (options.length < 1) return;
       let ind = Math.floor(Math.random() * options.length)
       soundRefs[soundRef].current.play();
       soundRef = soundRef ? 0 : 1
       newDCards.push(options[ind]);
-      allDCards.find(x => (x.start === options[ind].start && x.end === options[ind].end)).taken = true;
+      let takenCard = allDCards.find(x => (x.start === options[ind].start && x.end === options[ind].end))
+      console.log(takenCard);
+      takenCard.taken = true;
+      console.log(takenCard, allDCards);
     }
-    await setTimeout(() => setPossibleDCards(newDCards), 600);
-    await db.collection(id).doc('logic').update({ destinations: allDCards })
+    await setTimeout(async () => {
+      console.log('updated DB');
+      await updateDB({ destinations: allDCards }, null)
+      setPossibleDCards(newDCards)
+    }, 600);
   }
 
   //=====================================================================================================================================
@@ -470,6 +486,7 @@ export default function Game({ reload, load }) {
           handleClaimLine={handleClaimLine}
           color={user.color}
           destinations={destinations}
+          myTokens={user.tokens}
         />
         <UI
           waiting={logic.waiting}
@@ -483,7 +500,7 @@ export default function Game({ reload, load }) {
           handleTakeCard={handleTakeCard}
           handleSelectCard={handleSelectCard}
           handleAddCards={handleAddCards}
-          handleDiscard={handleDiscard}
+          // handleDiscard={handleDiscard}
           discardDCard={discardDCard}
           getReady={getReady}
           getMoreDCards={getMoreDCards}

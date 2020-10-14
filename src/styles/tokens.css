@@ -1,9 +1,9 @@
 .token {
     position: absolute;
-    color: #FFF;
+    color: #333;
     font-weight: bolder;
     font-family: sans-serif;
-    background: linear-gradient(rgb(226, 165, 33) 21%, rgba(162,129,38,1));
+    background: linear-gradient(rgba(226, 165, 33, 0.5) 21%, rgba(162,129,38,.05));
     opacity: .6;
     width: 5%;
     border: 2px solid white;
@@ -21,9 +21,22 @@
 }
 
 .glowing {
-    box-shadow: 0 0 10px red;
-    -webkit-box-shadow: 0 0 15px purple;
-    border: 2px solid black;
+    opacity: 1;
+}
+
+.ring {
+    width: 130%;
+    height: 130%;
+    position: absolute;
+    color: #777;
+    border-radius: 50%;
+    /* top: 50%;
+    left: 50%; */
+}
+
+.token.taken {
+    color: black;
+    background: linear-gradient(rgb(226, 165, 33) 21%, rgb(162,129,38));
     opacity: 1;
 }
 
