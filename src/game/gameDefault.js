@@ -330,7 +330,7 @@ const paths = [
     color: 'grey',
     num: 3,
     taken: false,
-    nodes: ['Brooklyn', 'Soho']
+    nodes: ['Wall Street', 'Soho']
   }]
 ]
 

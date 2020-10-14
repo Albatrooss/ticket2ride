@@ -7,9 +7,9 @@ export default function OthersUi({ users }) {
       {users.map(user => <li key={user.id}>
         {user.id}
         <div>
-          <span>C: {user.hand.length}</span>
-          <span>D: {user.dCards.length}</span>
-          <span>T: {user.taxis}</span>
+          <div><div className="card-symbol">T</div><p>: {user.points}</p><div className="card-hover"><p>The number of regular cards in your opponent's hand</p></div></div>
+          <div><div className="card-symbol dest">D</div><p>: {user.dCards.length}</p><div className="card-hover"><p>The number of destinations cards in your opponent's hand</p></div></div>
+          <div><div className="taxi symbol" style={{ backgroundColor: user.color }} /><p>: {user.taxis}</p><div className="card-hover"><p>The number of taxis pieces your opponent has left to play</p></div></div>
         </div>
       </li>)}
     </ul>

@@ -21,7 +21,8 @@ export default function UI({
   getMoreDCards,
   possibleDCards,
   keepNewDCard,
-  discardNewDCard
+  discardNewDCard,
+  passTurn
 }) {
 
   return (
@@ -59,14 +60,16 @@ export default function UI({
           <div className={`${d.connected ? 'connected' : ''}`}>
             <p>{d.start}<span>-to-</span>{d.end}</p>
             <span className="points">{d.points}</span>
+            <div className="dcard-hover"><p>{d.connected ? `You did it! Enjoy your ${d.points} points!` : `Destination Card: Connect ${d.start} to ${d.end} and get ${d.points} points!`}</p></div>
           </div>
           {waiting && !user.ready && user.dCards.length > 1 && <button onClick={() => discardDCard(i)}>Discard</button>}</li>)}
         {waiting && !user.ready && <li className="ready-btn"><button onClick={getReady}>Ready!</button></li>}
         {possibleDCards && possibleDCards.map((p, i) => <li key={`${p.start}-${p.end}`} className='possible-d'>
           <div>
             <p>{p.start}<span>-to-</span>{p.end}</p>
+            <span className="points">{p.points}</span>
           </div>
-          <div>
+          <div className='dCard-buttons'>
             <button onClick={() => keepNewDCard(i)}>Keep</button>
             <button onClick={() => discardNewDCard(i)}>Discard</button>
           </div>
@@ -75,15 +78,16 @@ export default function UI({
 
 
       <div className='points-taxis'>
-        <div className="dCard-more"><button onClick={getMoreDCards}>More<br />Destintation Cards</button></div>
-        <div>
-          <img className="taxi-icon" src="/images/Taxi_Icon.png" alt="taxis" />
+        <div className="dCard-more"><button onClick={getMoreDCards}>More<br />Destintation Cards</button><div className="dcard-hover"><p>Click here to get 2 more Destination Cards, you can discard only one!</p></div></div>
+        <div className="my-taxis">
+          <div className="taxi" style={{ backgroundColor: user.color }}></div>
           <p>{user.taxis}</p>
         </div>
         <div className="my-points">
           Points:
           <span>{user.points}</span>
         </div>
+        <button onClick={passTurn}>Pass</button>
       </div>
       <OthersUI users={users} />
     </div>

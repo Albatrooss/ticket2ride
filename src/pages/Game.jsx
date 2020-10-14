@@ -52,8 +52,12 @@ export default function Game({ reload, load }) {
       let path = defaultPaths[outerKey][innerKey];
       let numberOfTaxis = path.num;
 
-      // Check if path is taken || the other line is taken by you || you have enough taxis
-      if (paths[`${outerKey}-${innerKey}`] || other === user.color || numberOfTaxis > user.taxis) return;
+      let rightCards = false;
+
+      if (hand.filter((x, i) => selectedCards.includes(i)).includes(path.color) || path.color === 'grey') rightCards = true;
+
+      // Check if path is taken || the other line is taken by you || you have enough taxis || wrong color
+      if (paths[`${outerKey}-${innerKey}`] || other === user.color || numberOfTaxis > user.taxis || !rightCards) return;
 
 
       // Check you have selected the cards for it\
@@ -210,14 +214,16 @@ export default function Game({ reload, load }) {
     // Change turn if necessary
     let turn = logic.turn;
     let turnOver = false;
+    let done = false;
 
     if (moves > 1) { // The player gets to take 2 cards, unless the card is wild;
       turn++;
       turn = turn % logic.order.length;
       moves = 0;
       turnOver = true;
+      done = logic.lastTurn;
     }
-    await updateDB({ deck, discard, moves, turn }, { hand });
+    await updateDB({ deck, discard, moves, turn }, { hand, done });
 
     if (turnOver) setMyTurn(false);
   }
@@ -287,14 +293,16 @@ export default function Game({ reload, load }) {
     // Change turn if necessary
     let turn = logic.turn;
     let turnOver = false;
+    let done = false;
     if (moves > 1) {
       turn++;
       turn = turn % logic.order.length;
       moves = 0;
       turnOver = true;
+      done = logic.lastTurn;
     }
 
-    await updateDB({ deck, discard, showing, moves, turn }, { hand });
+    await updateDB({ deck, discard, showing, moves, turn }, { hand, done });
 
     if (turnOver) setMyTurn(false);
   }
@@ -357,35 +365,61 @@ export default function Game({ reload, load }) {
     possible.splice(ind, 1);
     setPossibleDCards(possible);
 
+    // Check if new card is allready good!
+    let checkedDCards = [];
+    let dCardPoints = 0;
+    dCards.forEach(d => {
+      if (d.connected) return checkedDCards.push(d);
+      let connected = (checkConnected(d.start, d.end, user.routes) || checkConnected(d.end, d.start, user.routes));
+      // Get points if connected
+      if (connected) {
+        dCardPoints = d.points;
+      }
+      checkedDCards.push({
+        ...d,
+        connected: connected
+      })
+    })
 
     // Change turn if necessary
-    console.log(possible.length)
     let myTurn = true;
+    let done = false
     if (possible.length < 1) {
       turn++;
       turn = turn % logic.order.length;
       myTurn = false;
+      done = logic.lastTurn
     }
-    await updateDB({ turn }, { dCards });
+    await updateDB({ turn, points: user.points + dCardPoints }, { dCards: checkedDCards, done });
     setMyTurn(myTurn);
   }
 
   const discardNewDCard = async ind => {
-    let dCards = [...possibleDCards];
-    dCards.splice(ind, 1);
-    setPossibleDCards(dCards);
+    let possibledCards = [...possibleDCards];
+    possibledCards.splice(ind, 1);
+    setPossibleDCards([]);
 
     soundRefs[0].current.play();
     // Change turn if necessary\
 
     let turn = logic.turn;
-    if (possibleDCards.length <= 1) {
-      turn++;
-      turn = turn % logic.order.length;
-      await db.collection(id).doc('logic').update({ turn, })
+    turn++;
+    turn = turn % logic.order.length;
+    let points = user.points;
+    let dCards = [...user.dCards];
+    if (possibledCards.length > 0) {
+      let d = possibleDCards[0];
+      let connected = (checkConnected(d.start, d.end, user.routes) || checkConnected(d.end, d.start, user.routes));
+      if (connected) {
+        d = { ...d, connected: true };
+        points += d.points;
+      }
 
-      setMyTurn(false);
+      dCards.push(d);
     }
+
+    await updateDB({ turn }, { dCards, points, done: logic.lastTurn });
+    setMyTurn(false);
   }
 
   const handleAddCards = async () => {
@@ -394,26 +428,23 @@ export default function Game({ reload, load }) {
   }
 
   const getMoreDCards = async () => {
-    if (logic.moves > 0 || possibleDCards.length > 0) return;
+    if (logic.moves > 0) return;
     let allDCards = [...logic.destinations];
+    if (allDCards.filter(x => !x.taken).length < 1) return alert('No more Destination Cards!');
     let newDCards = [];
     let soundRef = 0;
-    console.log('start');
     getDCard();
     await setTimeout(getDCard, 500);
 
     function getDCard() {
       let options = allDCards.filter(x => !x.taken);
-      console.log(options.length, allDCards.length);
       if (options.length < 1) return;
       let ind = Math.floor(Math.random() * options.length)
       soundRefs[soundRef].current.play();
       soundRef = soundRef ? 0 : 1
       newDCards.push(options[ind]);
       let takenCard = allDCards.find(x => (x.start === options[ind].start && x.end === options[ind].end))
-      console.log(takenCard);
       takenCard.taken = true;
-      console.log(takenCard, allDCards);
     }
     await setTimeout(async () => {
       console.log('updated DB');
@@ -431,10 +462,19 @@ export default function Game({ reload, load }) {
   }
 
   const newGame = async () => {
-    await db.collection(id).doc('logic').delete();
-    await db.collection(id).doc(user.id).delete();
-    users.forEach(async u => await db.collection(id).doc(u.id).delete());
+    // await db.collection(id).doc('logic').delete();
+    // await db.collection(id).doc(user.id).delete();
+    // users.forEach(async u => await db.collection(id).doc(u.id).delete());
     history.push('/');
+  }
+
+  const passTurn = async () => {
+    if (!myTurn) return
+    let turn = logic.turn;
+    turn++;
+    turn = turn % logic.order.length;
+    await updateDB({ turn }, { done: logic.lastTurn })
+    setMyTurn(false);
   }
 
   //=====================================================================================================================================
@@ -507,6 +547,7 @@ export default function Game({ reload, load }) {
           possibleDCards={possibleDCards}
           keepNewDCard={keepNewDCard}
           discardNewDCard={discardNewDCard}
+          passTurn={passTurn}
         />
       </div>
       {user.done && users.every(u => u.done) && <EndGame newGame={newGame} users={[...users, user]} />}
