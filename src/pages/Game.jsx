@@ -20,6 +20,7 @@ const db = firebase.firestore();
 export default function Game({ reload, load }) {
 
   const { id } = useParams();
+  const dbRef = db.collection(id);
 
   const [logic, setLogic] = useState({ paths: [], deck: [] });
   const [users, setUsers] = useState([]);
@@ -126,10 +127,7 @@ export default function Game({ reload, load }) {
       let lastTurn = logic.lastTurn ? logic.lastTurn : taxis < 3;
 
       // Send to DB
-      await Promise.all([
-        db.collection(id).doc(user.id).update({ routes, taxis, points, dCards, hand, done: logic.lastTurn }),
-        db.collection(id).doc('logic').update({ paths, turn, discard, lastTurn, lastModified: Date.now() })
-      ])
+      await updateDB({ paths, turn, discard, lastTurn, lastModified: Date.now() }, { routes, taxis, points, dCards, hand, done: logic.lastTurn })
 
       //Reset locally
       setSelectedCards([]);
@@ -144,64 +142,63 @@ export default function Game({ reload, load }) {
   //==================================================================================================================
 
   const dealStarterCards = async () => {
-    if (users.some(user => !user.ready)) return;
-    let deck = [...logic.deck];
 
     //bring all users into one array
     let usersArr = [...users, user];
+    let deck = [...logic.deck];
+
+    if (users.some(user => !user.ready)) return; // Return if someone isn't ready
 
     //deal 4 cards each
     for (let i = 0; i < usersArr.length * 4; i++) {
-      deal(usersArr[i % usersArr.length].hand)
+      deal(usersArr[i % usersArr.length].hand, deck)
     }
 
     // Deal the 5 starter face up cards
     let showing = logic.showing || [];
-    let interval = setInterval(dealToShowing, 500);
+    let dealInterval = setInterval(dealToShowing, 500);
     let cardsDealt = 0
     let soundRef = 0;
 
     async function dealToShowing() {
       cardsDealt++;
       if (cardsDealt > 5) {
-        clearInterval(interval);
+        clearInterval(dealInterval);
         return;
       }
-      deal(showing);
+      deal(showing, deck);
       soundRefs[soundRef].current.play();
       soundRef = soundRef ? 0 : 1;
-      await db.collection(id).doc('logic').update({ showing });
-    }
-
-    function deal(where) {
-      let ind = Math.floor(Math.random() * deck.length);
-      where.push(deck[ind]);
-      deck.splice(ind, 1);
+      await updateDB({ showing }, null);
     }
 
     //save it to db
-    await Promise.all(usersArr.map(u => db.collection(id).doc(u.id).update({ hand: u.hand })));
-    await db.collection(id).doc('logic').update({ deck, waiting: false })
+    await Promise.all(usersArr.map(async u => await db.collection(id).doc(u.id).update({ hand: u.hand })));
+    await updateDB({ deck, waiting: false }, null);
   }
 
   const handleTakeFromDeck = async () => {
     let deck = [...logic.deck];
     let discard = [...logic.discard];
-    if (deck.length < 1 && discard.length < 1) {
+
+    if (!myTurn) return;
+
+    if (deck.length < 1 && discard.length < 1) { // Check there are cards in the deck or discard
       alert('Out of Cards!')
       return;
     }
-    if (!myTurn) return;
-    if (deck.length < 1) {
+    if (deck.length < 1) { // Put used cards back in the deck if deck is empty
       deck = discard;
       discard = [];
     }
+    // Put random card from deck into hand, remove from deck
     let hand = user.hand ? [...user.hand] : [];
-    let ind = Math.floor(Math.random() * deck.length);
-    hand.push(deck[ind]);
-    deck.splice(ind, 1);
 
+    deal(hand, deck);
+
+    // Play deal noise
     soundRefs[0].current.play();
+
     // Check and add moves
     let moves = logic.moves;
     moves++;
@@ -210,16 +207,13 @@ export default function Game({ reload, load }) {
     let turn = logic.turn;
     let turnOver = false;
 
-    if (moves > 1) {
+    if (moves > 1) { // The player gets to take 2 cards, unless the card is wild;
       turn++;
       turn = turn % logic.order.length;
       moves = 0;
       turnOver = true;
     }
-    await Promise.all([
-      db.collection(id).doc(user.id).update({ hand }),
-      db.collection(id).doc('logic').update({ deck, discard, moves, turn })
-    ]);
+    await updateDB({ deck, discard, moves, turn }, { hand });
 
     if (turnOver) setMyTurn(false);
   }
@@ -229,20 +223,24 @@ export default function Game({ reload, load }) {
     let showing = [...logic.showing];
     let wild = showing[index] === 'wild';
     let moves = logic.moves;
+    let deck = [...logic.deck];
+    let discard = [...logic.discard];
+    let hand = [...user.hand];
 
     // If allready taken a card, cant take a wild
     if (wild && moves > 0) return
 
-    let deck = [...logic.deck];
-    let discard = [...logic.discard]; // Check there are cards in the deck, if not replace with the discarded cards
+    // Check there are cards in the deck, if not replace with the discarded cards
     if (deck.length < 1) {
       deck = discard;
       discard = [];
     }
-    let hand = [...user.hand];
+
+    // Push card into hand and play noise
     hand.push(showing[index]);
     soundRefs[0].current.play();
-    let ind = Math.floor(Math.random() * deck.length);
+
+    let ind = Math.floor(Math.random() * deck.length); // Take random card from deck and display face up, if there is a card to use
     if (deck.length > 0) {
       showing.splice(index, 1, deck[ind]);
       deck.splice(ind, 1);
@@ -263,28 +261,15 @@ export default function Game({ reload, load }) {
       let soundRef = 0;
 
       async function dealToShowing() {
-        console.log(soundRef)
         cardsDealt++;
         if (cardsDealt > 5) {
           clearInterval(interval);
           return;
         }
-        deal(showing);
+        deal(showing, deck);
         soundRefs[soundRef].current.play();
         soundRef = soundRef ? 0 : 1
         await db.collection(id).doc('logic').update({ showing });
-      }
-    }
-
-    function deal(where) {
-      if (deck.length < 1) {
-        deck = discard;
-        discard = [];
-      }
-      if (deck.length > 0) {
-        let ind = Math.floor(Math.random() * deck.length);
-        where.push(deck[ind]);
-        deck.splice(ind, 1);
       }
     }
 
@@ -305,10 +290,7 @@ export default function Game({ reload, load }) {
       turnOver = true;
     }
 
-    await Promise.all([
-      db.collection(id).doc(user.id).update({ hand }),
-      db.collection(id).doc('logic').update({ deck, discard, showing, moves, turn })
-    ]);
+    await updateDB({ deck, discard, showing, moves, turn }, { hand });
 
     if (turnOver) setMyTurn(false);
   }
@@ -371,12 +353,9 @@ export default function Game({ reload, load }) {
 
     // Change turn if necessary
     let turn = logic.turn;
-    let turnOver = false;
-    console.log(possibleDCards);
     if (possibleDCards.length <= 1) {
       turn++;
       turn = turn % logic.order.length;
-      turnOver = true;
       await db.collection(id).doc('logic').update({ turn, })
 
       setMyTurn(false);
@@ -392,11 +371,9 @@ export default function Game({ reload, load }) {
     // Change turn if necessary\
 
     let turn = logic.turn;
-    let turnOver = false;
     if (possibleDCards.length <= 1) {
       turn++;
       turn = turn % logic.order.length;
-      turnOver = true;
       await db.collection(id).doc('logic').update({ turn, })
 
       setMyTurn(false);
@@ -478,6 +455,12 @@ export default function Game({ reload, load }) {
     }
   }, [load, id, history])
 
+
+  async function updateDB(logicUpdate, userUpdate) {
+    if (logicUpdate) dbRef.doc('logic').update(logicUpdate);
+    if (userUpdate) dbRef.doc(user.id).update(userUpdate);
+  }
+
   return (
     <main className="main-game">
       <h1>Ticket to Ride - New York</h1>
@@ -522,6 +505,7 @@ export default function Game({ reload, load }) {
 //         HELPER FUNCTIONS
 //================================================================================================================
 
+
 function checkConnected(startingNode, endingNode, routes = []) {
   let usedPaths = []
   let answer = false;
@@ -560,5 +544,15 @@ function convertPoints(num) {
     return 4;
   } else {
     return 7
+  }
+}
+
+function deal(where, deck) {
+  if (deck.length > 0) {
+    let ind = Math.floor(Math.random() * deck.length);
+    where.push(deck[ind]);
+    deck.splice(ind, 1);
+  } else {
+    console.log('Deck is empty..')
   }
 }

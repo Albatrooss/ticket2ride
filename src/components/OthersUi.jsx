@@ -9,7 +9,7 @@ export default function OthersUi({ users }) {
         <div>
           <span>C: {user.hand.length}</span>
           <span>D: {user.dCards.length}</span>
-          <span>P: {user.points}</span>
+          <span>T: {user.taxis}</span>
         </div>
       </li>)}
     </ul>

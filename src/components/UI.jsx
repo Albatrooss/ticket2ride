@@ -61,7 +61,7 @@ export default function UI({
             <span className="points">{d.points}</span>
           </div>
           {waiting && !user.ready && user.dCards.length > 1 && <button onClick={() => discardDCard(i)}>Discard</button>}</li>)}
-        {waiting && !user.ready && <li><button onClick={getReady}>Ready!</button></li>}
+        {waiting && !user.ready && <li className="ready-btn"><button onClick={getReady}>Ready!</button></li>}
         {possibleDCards && possibleDCards.map((p, i) => <li key={`${p.start}-${p.end}`} className='possible-d'>
           <div>
             <p>{p.start}<span>-to-</span>{p.end}</p>
