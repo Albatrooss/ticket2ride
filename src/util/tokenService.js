@@ -10,7 +10,7 @@ function createJWT(username) {
 }
 
 function setToken(token) {
-  localStorage.setItem('token', token);
+  localStorage.setItem('ticket-token', token);
 }
 
 function setTokenFromUser(user) {
@@ -19,11 +19,11 @@ function setTokenFromUser(user) {
 }
 
 function getToken() {
-  let token = localStorage.getItem('token');
+  let token = localStorage.getItem('ticket-token');
   if (token) {
     const payload = JSON.parse(atob(token.split('.')[1]));
     if (payload.exp < Date.now() / 1000) {
-      localStorage.removeItem('token');
+      localStorage.removeItem('ticket-token');
       token = null;
     }
   }
@@ -36,7 +36,7 @@ function getUserFromToken() {
 }
 
 function removeToken() {
-  localStorage.removeItem('token');
+  localStorage.removeItem('ticket-token');
 }
 
 export default {

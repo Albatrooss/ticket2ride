@@ -78,7 +78,7 @@ export default function UI({
 
 
       <div className='points-taxis'>
-        <div className="dCard-more"><button onClick={getMoreDCards}>More<br />Destintation Cards</button><div className="dcard-hover"><p>Click here to get 2 more Destination Cards, you can discard only one!</p></div></div>
+        <div className="dCard-more"><button onClick={getMoreDCards}>More<br />Destination Cards</button><div className="dcard-hover"><p>Click here to get 2 more Destination Cards, you can discard only one!</p></div></div>
         <div className="my-taxis">
           <div className="taxi" style={{ backgroundColor: user.color }}></div>
           <p>{user.taxis}</p>

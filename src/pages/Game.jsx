@@ -134,6 +134,9 @@ export default function Game({ reload, load }) {
 
       let lastTurn = logic.lastTurn ? logic.lastTurn : taxis < 3;
 
+      // Subtract points for d Cards not completed
+      if (logic.lastTurn) points += subtractDests(routes);
+
       // Send to DB
       await updateDB({ paths, turn, discard, lastTurn, lastModified: Date.now() }, { routes, taxis, points, tokens: myTokens, dCards, hand, done: logic.lastTurn })
 
@@ -223,7 +226,11 @@ export default function Game({ reload, load }) {
       turnOver = true;
       done = logic.lastTurn;
     }
-    await updateDB({ deck, discard, moves, turn }, { hand, done });
+    // Subtract points if last turn
+    let points = user.points;
+    if (logic.lastTurn) points += subtractDests(user.routes);
+
+    await updateDB({ deck, discard, moves, turn }, { hand, done, points });
 
     if (turnOver) setMyTurn(false);
   }
@@ -256,6 +263,12 @@ export default function Game({ reload, load }) {
       deck.splice(ind, 1);
     } else {
       showing.splice(index, 1)
+    }
+
+    while (showing.length < 5 && deck.length > 0) { // Keep adding to showing until there are 5 cards
+      ind = Math.floor(Math.random() * deck.length);
+      showing.push(deck[ind]);
+      deck.splice(ind, 1)
     }
 
     // Check how many wild cards are showing
@@ -302,7 +315,11 @@ export default function Game({ reload, load }) {
       done = logic.lastTurn;
     }
 
-    await updateDB({ deck, discard, showing, moves, turn }, { hand, done });
+    // Subtract points if last turn
+    let points = user.points;
+    if (logic.lastTurn) points += subtractDests(user.routes);
+
+    await updateDB({ deck, discard, showing, moves, turn }, { hand, done, points });
 
     if (turnOver) setMyTurn(false);
   }
@@ -341,14 +358,6 @@ export default function Game({ reload, load }) {
     setSelectedCards(prev)
   }
 
-  // const handleDiscard = async ind => {
-  //   if (!myTurn) return;
-  //   let discard = logic.discard ? [...logic.discard] : [];
-  //   let hand = [...user.hand];
-  //   discard.push(hand[ind]);
-  //   hand.splice(ind, 1);
-  //   await Promise.all([db.collection(id).doc('logic').update({ discard }), db.collection(id).doc(user.id).update({ hand })]);
-  // }
 
   const discardDCard = async ind => {
     let dCards = [user.dCards];
@@ -453,6 +462,16 @@ export default function Game({ reload, load }) {
     }, 600);
   }
 
+  const subtractDests = (routes) => {
+    let points = 0;
+    user.dCards.forEach(d => {
+      if (d.connected) return;
+      let connected = (checkConnected(d.start, d.end, routes) || checkConnected(d.end, d.start, routes));
+      if (!connected) points -= d.points;
+    })
+    return points;
+  }
+
   //=====================================================================================================================================
   //  GAME STATES
   //=====================================================================================================================================
@@ -465,6 +484,7 @@ export default function Game({ reload, load }) {
     // await db.collection(id).doc('logic').delete();
     // await db.collection(id).doc(user.id).delete();
     // users.forEach(async u => await db.collection(id).doc(u.id).delete());
+    tokenService.removeToken();
     history.push('/');
   }
 
@@ -473,7 +493,9 @@ export default function Game({ reload, load }) {
     let turn = logic.turn;
     turn++;
     turn = turn % logic.order.length;
-    await updateDB({ turn }, { done: logic.lastTurn })
+    let points = user.points;
+    if (logic.lastTurn) points += subtractDests(user.routes);
+    await updateDB({ turn }, { done: logic.lastTurn, points })
     setMyTurn(false);
   }
 

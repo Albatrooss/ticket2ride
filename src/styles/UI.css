@@ -1,9 +1,11 @@
 .ui {
     background-color: burlywood;
+    display: flex;
+    flex-direction: column;
 }
 
 .cards-area {
-    height: 20%;
+    height: 15%;
     /* background-color: red; */
 }
 
@@ -27,6 +29,7 @@
 
 .ui h2 {
     height: 10%;
+    padding: 5%;
 }
 
 .hand-container {
@@ -218,29 +221,36 @@
 
 .other-ui {
     height: 10%;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    justify-content: space-between;
     list-style: none;
-    margin: 0;
+    margin: auto 0 0 0;
     padding: 0;
 }
 
 .other-ui li {
-    width: 100%;
+    width: 33.33%;
     height: 100%;
-    padding: 10px;
+    margin: 0;
+    padding: 1%;
     font-size: 1em;
     font-weight: bolder;
     border-top: 2px solid #333;
     border-right: 2px solid #333;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
+
+
 
 .other-ui li:nth-child(3) {
     border-right: none
 }
 
 .other-ui li > div {
-    height: 70%;
+    height: 50%;
     margin-top: 3px;
     display: flex;
     justify-content: space-evenly;
